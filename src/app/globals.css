@@ -708,6 +708,30 @@ body {
   background: var(--accent-soft);
 }
 
+/* Pointer affordances.
+   Tailwind v4 preflight no longer gives buttons a pointer cursor, so it is
+   restored once here rather than repeated across every control. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label[for],
+summary,
+select:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed;
+}
+
+/* A consistent press response. Scoped to real buttons: list rows carry a drag
+   gesture, and a transform there would fight it. Motion components set
+   transform inline, which wins over this, so they keep their own animation. */
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
 /* Focus visibility */
 :focus-visible {
   outline: 2px solid var(--focus-ring);

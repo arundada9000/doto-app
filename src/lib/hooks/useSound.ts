@@ -9,7 +9,8 @@ type SoundName =
   | "error"
   | "confirm"
   | "reminder"
-  | "dayComplete";
+  | "dayComplete"
+  | "uncomplete";
 
 /**
  * Clearing several items in a row lifts the pitch a little each time, resetting
@@ -97,6 +98,11 @@ const PATTERNS: Record<SoundName, Pattern> = {
   reminder: (ctx, v) => {
     tone(ctx, 880, 0, 0.12, v);
     tone(ctx, 880, 0.18, 0.12, v);
+  },
+  // Undo, not achievement: descending and quieter than completing.
+  uncomplete: (ctx, v) => {
+    tone(ctx, 660, 0, 0.07, v * 0.75);
+    tone(ctx, 440, 0.07, 0.12, v * 0.65);
   },
   // Reserved for clearing everything due today. Deliberately the only rising
   // four-note figure in the set, so it is unmistakable.

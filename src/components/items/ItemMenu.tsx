@@ -68,6 +68,7 @@ export function ItemMenu({ item }: { item: Item }) {
     if (item.completed) {
       action(() => {
         uncompleteItem(item.id);
+        play("uncomplete");
         vibrate("light");
       });
     } else {

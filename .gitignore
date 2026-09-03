@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local tooling config
+.claude/
+
 # project management
 IMPLEMENTATION_PLAN.md
 TRACKER.md

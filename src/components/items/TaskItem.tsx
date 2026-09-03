@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Paperclip, Clock, Link2 } from "lucide-react";
 import type { Item } from "@/types";
@@ -55,10 +55,17 @@ export function TaskRow({
   const reduceMotion = useSettingsStore((s) => s.reduceMotion);
   const celebrate = useCelebrationStore((s) => s.celebrate);
   const rowRef = useRef<HTMLDivElement>(null);
+  const [undoing, setUndoing] = useState(false);
 
   const toggle = () => {
     if (item.completed) {
       uncompleteItem(item.id);
+      play("uncomplete");
+      vibrate("light");
+      if (!reduceMotion) {
+        setUndoing(true);
+        setTimeout(() => setUndoing(false), 420);
+      }
       return;
     }
     // Capture the row position before completing: the item leaves the list on
@@ -119,16 +126,46 @@ export function TaskRow({
           }}
           aria-label={item.completed ? "Mark as not done" : "Mark as done"}
           aria-pressed={item.completed}
-          className="relative mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-border-strong transition-colors focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+          className={cn(
+            "group/check relative mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-[var(--duration-fast)] focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]",
+            item.completed
+              ? "border-transparent hover:border-border-strong"
+              : "border-border-strong hover:border-secondary-color hover:bg-secondary-soft"
+          )}
         >
+          {/* A ghost check on hover previews what the click will do. */}
+          {!item.completed && (
+            <Check
+              className="h-3.5 w-3.5 text-secondary-color opacity-0 transition-opacity duration-[var(--duration-fast)] group-hover/check:opacity-45"
+              strokeWidth={3}
+              aria-hidden
+            />
+          )}
+
+          {/* Undoing gets its own contracting ring, so reopening an item reads
+              as the deliberate reverse of completing it. */}
+          <AnimatePresence>
+            {undoing && (
+              <motion.span
+                key="undo-ring"
+                aria-hidden
+                className="absolute inset-0 rounded-full border-2 border-border-strong"
+                initial={{ opacity: 0.9, scale: 1.7 }}
+                animate={{ opacity: 0, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              />
+            )}
+          </AnimatePresence>
+
           <AnimatePresence>
             {item.completed && (
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
+                exit={{ scale: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary-color"
+                className="absolute flex h-5 w-5 items-center justify-center rounded-full bg-secondary-color"
               >
                 <motion.span
                   initial={{ scale: 0, rotate: -30 }}
