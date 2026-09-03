@@ -1,18 +1,23 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Link2, X, FileText, Image as ImageIcon, Plus } from "lucide-react";
+import { Link2, X, Image as ImageIcon, Plus } from "lucide-react";
 import { nanoid } from "nanoid";
-import type { Item } from "@/types";
+import type { Attachment, Item } from "@/types";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useToastStore } from "@/lib/stores/toastStore";
 import { cn } from "@/lib/utils/cn";
+import {
+  AttachmentThumb,
+  AttachmentViewer,
+} from "@/components/items/AttachmentPreview";
 
 export function AttachmentsEditor({ item }: { item: Item }) {
   const updateItem = useItemsStore((s) => s.updateItem);
   const toast = useToastStore((s) => s.toast);
   const fileInput = useRef<HTMLInputElement>(null);
   const [linkInput, setLinkInput] = useState("");
+  const [viewing, setViewing] = useState<Attachment | null>(null);
 
   const addFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -50,40 +55,27 @@ export function AttachmentsEditor({ item }: { item: Item }) {
 
   return (
     <div className="flex flex-col gap-3">
+      <AttachmentViewer
+        attachment={viewing}
+        onClose={() => setViewing(null)}
+      />
       <div className="flex flex-wrap gap-2">
-        {[...item.attachments].reverse().map((att) => {
-          const isImage = att.type.startsWith("image/");
-          return (
-            <div
-              key={att.id}
-              className="relative overflow-hidden rounded-[var(--radius-md)] border border-border-subtle"
+        {[...item.attachments].reverse().map((att) => (
+          <div
+            key={att.id}
+            className="relative overflow-hidden rounded-[var(--radius-md)] border border-border-subtle"
+          >
+            <AttachmentThumb attachment={att} onOpen={() => setViewing(att)} />
+            <button
+              type="button"
+              onClick={() => removeFile(att.id)}
+              aria-label={`Remove ${att.name}`}
+              className="absolute right-0.5 top-0.5 rounded-full bg-black/50 p-0.5 text-white hover:bg-black/70"
             >
-              {isImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={att.data instanceof Blob ? URL.createObjectURL(att.data) : ""}
-                  alt={att.name}
-                  className="h-16 w-16 object-cover"
-                />
-              ) : (
-                <div className="flex h-16 w-16 flex-col items-center justify-center gap-1 bg-hover px-1 text-center">
-                  <FileText className="h-5 w-5 text-text-secondary" />
-                  <span className="line-clamp-2 text-[10px] leading-tight text-text-tertiary">
-                    {att.name}
-                  </span>
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => removeFile(att.id)}
-                aria-label={`Remove ${att.name}`}
-                className="absolute right-0.5 top-0.5 rounded-full bg-black/50 p-0.5 text-white hover:bg-black/70"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
-          );
-        })}
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        ))}
         <button
           type="button"
           onClick={() => fileInput.current?.click()}
