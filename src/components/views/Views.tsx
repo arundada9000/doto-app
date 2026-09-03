@@ -187,28 +187,7 @@ export function CompletedView() {
         />
       ) : (
         <div className="p-2 md:p-4">
-          <ul aria-label="Completed items">
-            {completedItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center gap-3 rounded-[var(--radius-md)] px-2 py-2.5"
-              >
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary-soft">
-                  <CheckCircle2 className="h-4 w-4 text-secondary-color" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="break-words text-[0.9375rem] text-text-secondary line-through">
-                    {item.title}
-                  </p>
-                  {item.completedAt && (
-                    <p className="text-xs text-text-tertiary">
-                      Completed {new Date(item.completedAt).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <ItemList items={completedItems} />
         </div>
       )}
     </div>
