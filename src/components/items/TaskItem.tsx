@@ -17,6 +17,35 @@ import { ItemMenu } from "@/components/items/ItemMenu";
 import { useCelebrationStore } from "@/lib/stores/celebrationStore";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
+  const checklistCount = item.checklist?.length ?? 0;
+
+  return (
+    <motion.li
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: checklistCount > 0 ? -60 : 0, height: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="group"
+      data-item-id={item.id}
+      style={{ zIndex: index }}
+    >
+      <TaskRow item={item} />
+    </motion.li>
+  );
+}
+
+/**
+ * The row itself, without the list-item wrapper, so it can also be rendered
+ * inside a reorderable list item without duplicating any of this markup.
+ */
+export function TaskRow({
+  item,
+  handle,
+}: {
+  item: Item;
+  handle?: React.ReactNode;
+}) {
   const { completeItem, uncompleteItem } = useItemsStore();
   const { remove } = useDeleteWithUndo();
   const openItem = useAppStore((s) => s.openItem);
@@ -57,31 +86,31 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
     item.dueAt && item.dueAt < new Date().getTime() && !item.completed;
 
   return (
-    <motion.li
-      layout
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: checklistCount > 0 ? -60 : 0, height: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="group"
-      data-item-id={item.id}
-      style={{ zIndex: index }}
+    <Swipeable
+      onSwipeRight={toggle}
+      onSwipeLeft={async () => {
+        await remove(item);
+        play("confirm");
+        vibrate("light");
+      }}
     >
-      <Swipeable
-        onSwipeRight={toggle}
-        onSwipeLeft={async () => {
-          await remove(item);
-          play("confirm");
-          vibrate("light");
+      <div
+        ref={rowRef}
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            open();
+          } else if (e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
         }}
+        className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
       >
-        <div
-          ref={rowRef}
-          role="button"
-          tabIndex={0}
-          onClick={open}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
-          className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
+        {handle}
         <button
           type="button"
           onClick={(e) => {
@@ -104,9 +133,17 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
                 <motion.span
                   initial={{ scale: 0, rotate: -30 }}
                   animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.05, type: "spring", stiffness: 500, damping: 20 }}
+                  transition={{
+                    delay: 0.05,
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 20,
+                  }}
                 >
-                  <Check className="h-3.5 w-3.5 text-text-onAccent" strokeWidth={3} />
+                  <Check
+                    className="h-3.5 w-3.5 text-text-onAccent"
+                    strokeWidth={3}
+                  />
                 </motion.span>
               </motion.span>
             )}
@@ -123,7 +160,9 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
             {item.title}
           </p>
 
-          {(checklistCount > 0 || item.attachments.length > 0 || item.links.length > 0) && (
+          {(checklistCount > 0 ||
+            item.attachments.length > 0 ||
+            item.links.length > 0) && (
             <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
               {checklistCount > 0 && (
                 <span>
@@ -177,7 +216,6 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
 
         <ItemMenu item={item} />
       </div>
-      </Swipeable>
-    </motion.li>
+    </Swipeable>
   );
 }

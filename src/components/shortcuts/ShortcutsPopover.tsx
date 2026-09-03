@@ -12,6 +12,10 @@ const SHORTCUTS: { keys: string[][] | string; action: string }[] = [
   { action: "Inbox", keys: "I" },
   { action: "Completed", keys: "C" },
   { action: "Settings", keys: "S" },
+  { action: "Move between items", keys: "J / K or Arrows" },
+  { action: "Complete focused item", keys: "Space" },
+  { action: "Open focused item", keys: "Enter" },
+  { action: "Command mode", keys: "> in capture" },
   { action: "Close", keys: "Esc" },
 ];
 

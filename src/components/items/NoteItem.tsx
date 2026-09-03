@@ -12,12 +12,6 @@ import { ItemMenu } from "@/components/items/ItemMenu";
 import { formatRelative } from "@/lib/utils/dates";
 
 export function NoteItem({ item }: { item: Item }) {
-  const openItem = useAppStore((s) => s.openItem);
-  const { remove } = useDeleteWithUndo();
-  const { play } = useSound();
-  const { vibrate } = useHaptics();
-  const open = () => openItem(item.id);
-
   return (
     <motion.li
       layout
@@ -27,36 +21,63 @@ export function NoteItem({ item }: { item: Item }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
     >
-      <Swipeable
-        leftLabel="Delete"
-        onSwipeLeft={async () => {
-          await remove(item);
-          play("confirm");
-          vibrate("light");
+      <NoteRow item={item} />
+    </motion.li>
+  );
+}
+
+/** The note row without its list-item wrapper. See TaskRow for why. */
+export function NoteRow({
+  item,
+  handle,
+}: {
+  item: Item;
+  handle?: React.ReactNode;
+}) {
+  const openItem = useAppStore((s) => s.openItem);
+  const { remove } = useDeleteWithUndo();
+  const { play } = useSound();
+  const { vibrate } = useHaptics();
+  const open = () => openItem(item.id);
+
+  return (
+    <Swipeable
+      leftLabel="Delete"
+      onSwipeLeft={async () => {
+        await remove(item);
+        play("confirm");
+        vibrate("light");
+      }}
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            open();
+          }
         }}
+        className="group flex gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
       >
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={open}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
-          className="group rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
-        >
-        <p className="whitespace-pre-wrap break-words text-[0.9375rem] leading-relaxed text-text-primary">
-          {item.title}
-        </p>
-        {item.tags.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-1">
-            {item.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
+        {handle}
+        <div className="min-w-0 flex-1">
+          <p className="whitespace-pre-wrap break-words text-[0.9375rem] leading-relaxed text-text-primary">
+            {item.title}
+          </p>
+          {item.tags.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {item.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="mt-1.5 flex items-center gap-2 text-xs text-text-tertiary">
             <span className="flex-1">{formatRelative(item.createdAt)}</span>
             {item.attachments.length > 0 && (
@@ -68,7 +89,7 @@ export function NoteItem({ item }: { item: Item }) {
             <ItemMenu item={item} />
           </div>
         </div>
-      </Swipeable>
-    </motion.li>
+      </div>
+    </Swipeable>
   );
 }

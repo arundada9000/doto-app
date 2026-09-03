@@ -2,10 +2,12 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Inbox, Sun, CheckCircle2, Flame } from "lucide-react";
+import { Inbox, Sun, CheckCircle2, Flame, CalendarArrowDown } from "lucide-react";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
+import { useToastStore } from "@/lib/stores/toastStore";
+import { useHaptics } from "@/lib/hooks/useHaptics";
 import { greetingFor, currentStreak, dayKey } from "@/lib/utils/dates";
 import { ItemList } from "@/components/items/ItemList";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -45,9 +47,11 @@ export function InboxView() {
   const openQuickCapture = useAppStore((s) => s.openQuickCapture);
   const profileName = useSettingsStore((s) => s.profileName);
 
+  // Sorted by order, not createdAt, so a manual arrangement survives. New
+  // items take the next order up, which keeps them at the end by default.
   const inboxItems = items
     .filter((i) => !i.completed && !i.dueAt)
-    .sort((a, b) => a.createdAt - b.createdAt);
+    .sort((a, b) => a.order - b.order || a.createdAt - b.createdAt);
 
   const dueItems = items
     .filter((i) => !i.completed && i.dueAt)
@@ -89,7 +93,7 @@ export function InboxView() {
                 Unsorted
               </h2>
             )}
-            <ItemList items={inboxItems} />
+            <ItemList items={inboxItems} reorderable />
           </section>
         </div>
       )}
@@ -140,6 +144,26 @@ export function TodayView() {
   const totalToday = doneToday + plannedToday;
   const progress = totalToday > 0 ? doneToday / totalToday : 0;
 
+  const updateItem = useItemsStore((s) => s.updateItem);
+  const toast = useToastStore((s) => s.toast);
+  const { vibrate } = useHaptics();
+
+  // Keeps each item its original time of day and only moves the date forward,
+  // so a 9am task stays a morning task.
+  const carryOverdueToToday = async () => {
+    const count = overdueItems.length;
+    if (count === 0) return;
+    for (const item of overdueItems) {
+      if (!item.dueAt) continue;
+      const previous = new Date(item.dueAt);
+      const next = new Date();
+      next.setHours(previous.getHours(), previous.getMinutes(), 0, 0);
+      await updateItem(item.id, { dueAt: next.getTime() });
+    }
+    vibrate("success");
+    toast(`Moved ${count} ${count === 1 ? "task" : "tasks"} to today`, "success");
+  };
+
   const streak = useMemo(() => {
     const doneDays = new Set<string>();
     for (const i of items) {
@@ -175,9 +199,19 @@ export function TodayView() {
         <div className="p-2 md:p-4">
           {overdueItems.length > 0 && (
             <section className="mb-1">
-              <h2 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-error">
-                Overdue
-              </h2>
+              <div className="flex items-center justify-between gap-2 px-3 py-2">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-error">
+                  Overdue
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => void carryOverdueToToday()}
+                  className="flex items-center gap-1.5 rounded-[var(--radius-sm)] px-2 py-1 text-xs font-medium text-text-secondary transition-colors hover:bg-hover hover:text-text-primary focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+                >
+                  <CalendarArrowDown className="h-3.5 w-3.5" />
+                  Move {overdueItems.length === 1 ? "it" : "all"} to today
+                </button>
+              </div>
               <ItemList items={overdueItems} />
             </section>
           )}

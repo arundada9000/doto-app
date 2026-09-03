@@ -20,6 +20,7 @@ import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 import { useServiceWorker } from "@/lib/hooks/useServiceWorker";
 import { useCaptureQuery } from "@/lib/hooks/useCaptureQuery";
 import { useReminders } from "@/lib/hooks/useReminders";
+import { useItemNavigation } from "@/lib/hooks/useItemNavigation";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const openSearch = useAppStore((s) => s.openSearch);
@@ -28,6 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useServiceWorker();
   useCaptureQuery();
   useReminders();
+  useItemNavigation();
   useFirstVisit(openOnboard);
 
   return (
