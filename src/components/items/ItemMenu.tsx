@@ -9,12 +9,14 @@ import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
+import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
 
 export function ItemMenu({ item }: { item: Item }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
+  const { completeItem, uncompleteItem } = useItemsStore();
+  const { remove } = useDeleteWithUndo();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
@@ -139,7 +141,7 @@ export function ItemMenu({ item }: { item: Item }) {
                     danger
                     onClick={() =>
                       action(async () => {
-                        await deleteItem(item.id);
+                        await remove(item);
                         play("confirm");
                       })
                     }

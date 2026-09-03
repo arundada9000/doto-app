@@ -12,6 +12,7 @@ interface ItemsState {
   completeItem: (id: string) => Promise<void>;
   uncompleteItem: (id: string) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
+  restoreItem: (item: Item) => Promise<void>;
   reorderItems: (ids: string[]) => Promise<void>;
   toggleChecklistItem: (itemId: string, checklistId: string) => Promise<void>;
   addChecklistEntry: (itemId: string, text: string) => Promise<void>;
@@ -95,6 +96,12 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
   deleteItem: async (id) => {
     await itemsTable.delete(id);
     set({ items: get().items.filter((i) => i.id !== id) });
+  },
+
+  restoreItem: async (item) => {
+    const restored = { ...item, updatedAt: Date.now() };
+    await itemsTable.put(restored);
+    set({ items: [...get().items, restored] });
   },
 
   reorderItems: async (ids) => {

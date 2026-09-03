@@ -8,13 +8,15 @@ import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
+import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
 import { formatRelative } from "@/lib/utils/dates";
 import { cn } from "@/lib/utils/cn";
 import { Swipeable } from "@/components/items/Swipeable";
 import { ItemMenu } from "@/components/items/ItemMenu";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
-  const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
+  const { completeItem, uncompleteItem } = useItemsStore();
+  const { remove } = useDeleteWithUndo();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
@@ -52,7 +54,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
       <Swipeable
         onSwipeRight={toggle}
         onSwipeLeft={async () => {
-          await deleteItem(item.id);
+          await remove(item);
           play("confirm");
           vibrate("light");
         }}

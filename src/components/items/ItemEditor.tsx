@@ -8,6 +8,7 @@ import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useToastStore } from "@/lib/stores/toastStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
+import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
 import { ChecklistEditor } from "@/components/items/ChecklistEditor";
 import { ScheduleFields } from "@/components/items/ScheduleFields";
 import { AttachmentsEditor } from "@/components/items/AttachmentsEditor";
@@ -38,7 +39,7 @@ function EditorDialog({
   onClose: () => void;
 }) {
   const updateItem = useItemsStore((s) => s.updateItem);
-  const deleteItem = useItemsStore((s) => s.deleteItem);
+  const { remove: deleteWithUndo } = useDeleteWithUndo();
   const toast = useToastStore((s) => s.toast);
   const { play } = useSound();
   const { vibrate } = useHaptics();
@@ -80,9 +81,8 @@ function EditorDialog({
   };
 
   const remove = async () => {
-    await deleteItem(item.id);
+    await deleteWithUndo(item);
     play("confirm");
-    toast("Deleted", "default", 1500);
     onClose();
   };
 

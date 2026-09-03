@@ -3,25 +3,36 @@ import { nanoid } from "nanoid";
 
 export type ToastVariant = "default" | "success" | "error" | "info";
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 export interface Toast {
   id: string;
   message: string;
   variant: ToastVariant;
   duration: number;
+  action?: ToastAction;
 }
 
 interface ToastState {
   toasts: Toast[];
-  toast: (message: string, variant?: ToastVariant, duration?: number) => void;
+  toast: (
+    message: string,
+    variant?: ToastVariant,
+    duration?: number,
+    action?: ToastAction
+  ) => void;
   dismiss: (id: string) => void;
 }
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
-  toast: (message, variant = "default", duration = 3000) => {
+  toast: (message, variant = "default", duration = 3000, action) => {
     const id = nanoid();
     set((state) => ({
-      toasts: [...state.toasts, { id, message, variant, duration }],
+      toasts: [...state.toasts, { id, message, variant, duration, action }],
     }));
     setTimeout(() => {
       set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));

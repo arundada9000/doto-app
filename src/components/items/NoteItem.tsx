@@ -4,16 +4,16 @@ import { motion } from "framer-motion";
 import { Paperclip } from "lucide-react";
 import type { Item } from "@/types";
 import { useAppStore } from "@/lib/stores/appStore";
-import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
+import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
 import { Swipeable } from "@/components/items/Swipeable";
 import { ItemMenu } from "@/components/items/ItemMenu";
 import { formatRelative } from "@/lib/utils/dates";
 
 export function NoteItem({ item }: { item: Item }) {
   const openItem = useAppStore((s) => s.openItem);
-  const deleteItem = useItemsStore((s) => s.deleteItem);
+  const { remove } = useDeleteWithUndo();
   const { play } = useSound();
   const { vibrate } = useHaptics();
   const open = () => openItem(item.id);
@@ -29,7 +29,7 @@ export function NoteItem({ item }: { item: Item }) {
       <Swipeable
         leftLabel="Delete"
         onSwipeLeft={async () => {
-          await deleteItem(item.id);
+          await remove(item);
           play("confirm");
           vibrate("light");
         }}
