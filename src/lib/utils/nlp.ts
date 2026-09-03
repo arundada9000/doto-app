@@ -6,6 +6,21 @@ export interface ParsedCapture {
   dueAt?: number;
   reminder?: number;
   recurrence?: RecurrenceRule;
+  tags: string[];
+}
+
+/**
+ * Requires a boundary before the hash so a URL fragment such as
+ * https://example.com#section is never mistaken for a tag.
+ */
+const TAG_PATTERN = /(^|\s)#([a-z0-9][\w-]*)/gi;
+
+export function extractTags(text: string): string[] {
+  const found = new Set<string>();
+  for (const m of text.matchAll(TAG_PATTERN)) {
+    found.add(m[2].toLowerCase());
+  }
+  return [...found];
 }
 
 const DAY_NAMES = [
@@ -132,6 +147,11 @@ export function parseCapture(raw: string): ParsedCapture {
   let dueAt: number | undefined;
   let recurrence: RecurrenceRule | undefined;
 
+  const tags = extractTags(text);
+  if (tags.length > 0) {
+    text = text.replace(TAG_PATTERN, "$1").replace(/\s+/g, " ").trim();
+  }
+
   const dateTokens = [
     "today",
     "tomorrow",
@@ -225,6 +245,7 @@ export function parseCapture(raw: string): ParsedCapture {
     title: title || raw.trim(),
     dueAt,
     recurrence,
+    tags,
   };
 }
 
