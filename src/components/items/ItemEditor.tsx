@@ -10,6 +10,7 @@ import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { ChecklistEditor } from "@/components/items/ChecklistEditor";
 import { ScheduleFields } from "@/components/items/ScheduleFields";
+import { AttachmentsEditor } from "@/components/items/AttachmentsEditor";
 import type { RecurrenceRule } from "@/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -175,6 +176,13 @@ function EditorDialog({
                   setRecurrence(patch.recurrence);
               }}
             />
+          </div>
+
+          <div className="mt-5 border-t border-border-subtle pt-4">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
+              Attachments &amp; links
+            </h3>
+            <AttachmentsEditor item={item} />
           </div>
 
           <div className="mt-5 border-t border-border-subtle pt-4">

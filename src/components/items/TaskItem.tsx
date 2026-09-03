@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Paperclip, Clock } from "lucide-react";
+import { Check, Paperclip, Clock, Link2 } from "lucide-react";
 import type { Item } from "@/types";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
@@ -105,7 +105,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
             {item.title}
           </p>
 
-          {(checklistCount > 0 || item.attachments.length > 0) && (
+          {(checklistCount > 0 || item.attachments.length > 0 || item.links.length > 0) && (
             <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
               {checklistCount > 0 && (
                 <span>
@@ -118,6 +118,25 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
                   {item.attachments.length}
                 </span>
               )}
+              {item.links.length > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Link2 className="h-3.5 w-3.5" />
+                  {item.links.length}
+                </span>
+              )}
+            </div>
+          )}
+
+          {item.tags.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {item.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent"
+                >
+                  #{tag}
+                </span>
+              ))}
             </div>
           )}
         </div>
