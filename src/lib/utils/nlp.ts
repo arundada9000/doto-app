@@ -227,3 +227,14 @@ export function parseCapture(raw: string): ParsedCapture {
     recurrence,
   };
 }
+
+const URL_PATTERN =
+  /\b(?:https?:\/\/|www\.)[^\s<>"']+/i;
+
+export function extractLink(text: string): string | null {
+  const match = URL_PATTERN.exec(text);
+  if (!match) return null;
+  let url = match[0].replace(/[),.;]+$/, "");
+  if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+  return url;
+}

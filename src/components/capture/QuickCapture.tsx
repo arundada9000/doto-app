@@ -6,7 +6,7 @@ import { X, Sparkles } from "lucide-react";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useToastStore } from "@/lib/stores/toastStore";
-import { parseCapture } from "@/lib/utils/nlp";
+import { parseCapture, extractLink } from "@/lib/utils/nlp";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import type { ItemType } from "@/types";
@@ -51,11 +51,12 @@ function CaptureDialog({ onClose }: { onClose: () => void }) {
     if (!text) return;
 
     const p = parseCapture(text);
+    const link = extractLink(text);
     let type: ItemType = "note";
     if (captureType !== "auto") {
       type = captureType;
     } else {
-      type = p.title.length <= 80 ? "task" : "note";
+      type = link ? "note" : p.title.length <= 80 ? "task" : "note";
     }
 
     try {
@@ -67,7 +68,7 @@ function CaptureDialog({ onClose }: { onClose: () => void }) {
         recurrence: p.recurrence,
         tags: [],
         attachments: [],
-        links: [],
+        links: link ? [link] : [],
       });
       play("capture");
       vibrate("light");
@@ -147,6 +148,11 @@ function CaptureDialog({ onClose }: { onClose: () => void }) {
               {parsed?.recurrence && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-secondary-soft px-2.5 py-1 font-medium text-secondary-color">
                   Repeats {parsed.recurrence.type}
+                </span>
+              )}
+              {value.trim() && extractLink(value) && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 font-medium text-accent">
+                  Link
                 </span>
               )}
             </div>
