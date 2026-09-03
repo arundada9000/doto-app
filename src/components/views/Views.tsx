@@ -236,22 +236,21 @@ export function CompletedView() {
 function StreakBadge({ streak }: { streak: number }) {
   const dayWord = streak === 1 ? "day" : "days";
 
+  // The label lives on the element itself rather than in a visually hidden text
+  // node, so there is no copy that can leak into the layout if a utility class
+  // is ever missing.
   return (
     <motion.div
+      role="img"
+      aria-label={`Current streak: ${streak} consecutive ${dayWord} with a completed task`}
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.12 }}
-      className="flex shrink-0 items-center gap-1.5 rounded-[var(--radius-md)] border border-border-subtle bg-surface px-2.5 py-1.5"
+      className="flex shrink-0 items-center gap-1.5 rounded-[var(--radius-md)] border border-border-subtle bg-surface px-2 py-1 md:px-2.5 md:py-1.5"
     >
       <Flame className="h-4 w-4 text-accent" aria-hidden />
-      <span
-        className="text-sm font-semibold tabular-nums text-text-primary"
-        aria-hidden
-      >
+      <span className="text-sm font-semibold tabular-nums text-text-primary" aria-hidden>
         {streak}
-      </span>
-      <span className="sr-only">
-        Current streak: {streak} consecutive {dayWord} with a completed task.
       </span>
     </motion.div>
   );
