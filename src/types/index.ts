@@ -62,9 +62,18 @@ export type ThemeName =
   | "graphite"
   | "nordic"
   | "solar"
-  | "monochrome";
+  | "monochrome"
+  | "plum"
+  | "ember"
+  | "slate"
+  | "copper";
 
-export type FontFamilyName = "system" | "serif" | "mono";
+export type FontFamilyName =
+  | "system"
+  | "serif"
+  | "mono"
+  | "rounded"
+  | "lora";
 
 export type ContextMenuStyle = "native" | "minimal" | "rounded" | "glass";
 

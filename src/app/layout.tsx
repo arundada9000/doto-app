@@ -1,6 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Source_Serif_4,
+  Nunito,
+  Lora,
+} from "next/font/google";
 import { AppProvider } from "@/providers/AppProvider";
 import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
@@ -17,6 +23,18 @@ const geistMono = Geist_Mono({
 
 const sourceSerif = Source_Serif_4({
   variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const nunito = Nunito({
+  variable: "--font-rounded",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
@@ -60,7 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-theme="light"
-      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${nunito.variable} ${lora.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full font-sans">

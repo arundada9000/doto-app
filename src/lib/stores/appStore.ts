@@ -7,6 +7,9 @@ interface AppState {
   searchOpen: boolean;
   openSearch: () => void;
   closeSearch: () => void;
+  helpOpen: boolean;
+  openHelp: () => void;
+  closeHelp: () => void;
   captureType: "task" | "note" | "auto";
   setCaptureType: (t: "task" | "note" | "auto") => void;
   editingItemId: string | null;
@@ -22,6 +25,10 @@ export const useAppStore = create<AppState>((set) => ({
   searchOpen: false,
   openSearch: () => set({ searchOpen: true }),
   closeSearch: () => set({ searchOpen: false }),
+
+  helpOpen: false,
+  openHelp: () => set({ helpOpen: true }),
+  closeHelp: () => set({ helpOpen: false }),
 
   captureType: "auto",
   setCaptureType: (captureType) => set({ captureType }),

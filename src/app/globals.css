@@ -501,6 +501,146 @@
 }
 
 /* ------------------------------------------------------------
+   Theme: Plum (dark purple)
+   ------------------------------------------------------------ */
+[data-theme="plum"] {
+  color-scheme: dark;
+  --bg: #17121c;
+  --surface: #201a28;
+  --surface-secondary: #251e2f;
+  --surface-raised: #2b2234;
+  --text-primary: #f0eaf6;
+  --text-secondary: #b9aec8;
+  --text-tertiary: #7d718c;
+  --text-onAccent: #17121c;
+  --border: #342a40;
+  --border-strong: #46384f;
+  --accent: #c98ef0;
+  --accent-hover: #d6a6f5;
+  --accent-soft: rgba(201, 142, 240, 0.18);
+  --secondary: #8ee0b6;
+  --secondary-hover: #a6ecC8;
+  --secondary-soft: rgba(142, 224, 182, 0.16);
+  --success: #8ee0b6;
+  --error: #ef8f8f;
+  --warning: #e7c07a;
+  --info: #c98ef0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --overlay: rgba(10, 6, 14, 0.6);
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --focus-ring: rgba(201, 142, 240, 0.5);
+  --header-bg: rgba(23, 18, 28, 0.8);
+}
+
+/* ------------------------------------------------------------
+   Theme: Ember (dark warm)
+   ------------------------------------------------------------ */
+[data-theme="ember"] {
+  color-scheme: dark;
+  --bg: #191310;
+  --surface: #211915;
+  --surface-secondary: #271d17;
+  --surface-raised: #2e2119;
+  --text-primary: #f5ebe1;
+  --text-secondary: #c2b2a2;
+  --text-tertiary: #857463;
+  --text-onAccent: #191310;
+  --border: #3a2c21;
+  --border-strong: #4c3a2b;
+  --accent: #f0a15e;
+  --accent-hover: #f7b276;
+  --accent-soft: rgba(240, 161, 94, 0.18);
+  --secondary: #57c7a0;
+  --secondary-hover: #6dd6b1;
+  --secondary-soft: rgba(87, 199, 160, 0.16);
+  --success: #57c7a0;
+  --error: #ef8070;
+  --warning: #e7b04a;
+  --info: #f0a15e;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --overlay: rgba(12, 8, 5, 0.6);
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --focus-ring: rgba(240, 161, 94, 0.5);
+  --header-bg: rgba(25, 19, 16, 0.8);
+}
+
+/* ------------------------------------------------------------
+   Theme: Slate (dark blue-grey)
+   ------------------------------------------------------------ */
+[data-theme="slate"] {
+  color-scheme: dark;
+  --bg: #0f1419;
+  --surface: #172027;
+  --surface-secondary: #1c2730;
+  --surface-raised: #222f3a;
+  --text-primary: #e8eef2;
+  --text-secondary: #a9b8c2;
+  --text-tertiary: #6f818c;
+  --text-onAccent: #0f1419;
+  --border: #2a3740;
+  --border-strong: #3b4b56;
+  --accent: #6fb3d9;
+  --accent-hover: #86c3e6;
+  --accent-soft: rgba(111, 179, 217, 0.18);
+  --secondary: #7fbfa8;
+  --secondary-hover: #93cbB6;
+  --secondary-soft: rgba(127, 191, 168, 0.16);
+  --success: #7fbfa8;
+  --error: #e08686;
+  --warning: #dfb967;
+  --info: #6fb3d9;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --overlay: rgba(4, 8, 12, 0.6);
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --focus-ring: rgba(111, 179, 217, 0.5);
+  --header-bg: rgba(15, 20, 25, 0.8);
+}
+
+/* ------------------------------------------------------------
+   Theme: Copper (dark earthy)
+   ------------------------------------------------------------ */
+[data-theme="copper"] {
+  color-scheme: dark;
+  --bg: #141311;
+  --surface: #1d1b17;
+  --surface-secondary: #232019;
+  --surface-raised: #2a2520;
+  --text-primary: #ece7de;
+  --text-secondary: #b0a89b;
+  --text-tertiary: #767065;
+  --text-onAccent: #141311;
+  --border: #332e26;
+  --border-strong: #443d32;
+  --accent: #d9a46b;
+  --accent-hover: #e6b27c;
+  --accent-soft: rgba(217, 164, 107, 0.18);
+  --secondary: #9bc29a;
+  --secondary-hover: #b0d1ad;
+  --secondary-soft: rgba(155, 194, 154, 0.16);
+  --success: #9bc29a;
+  --error: #e08282;
+  --warning: #dfbd68;
+  --info: #d9a46b;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --overlay: rgba(10, 9, 7, 0.6);
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --focus-ring: rgba(217, 164, 107, 0.5);
+  --header-bg: rgba(20, 19, 17, 0.8);
+}
+
+/* ------------------------------------------------------------
    Map tokens to Tailwind theme
    ------------------------------------------------------------ */
 @theme inline {

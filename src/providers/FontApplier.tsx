@@ -7,6 +7,8 @@ const FONT_VARS: Record<string, string> = {
   system: "var(--font-geist-sans)",
   serif: "var(--font-serif)",
   mono: "var(--font-geist-mono)",
+  rounded: "var(--font-rounded)",
+  lora: "var(--font-lora)",
 };
 
 export function FontApplier() {

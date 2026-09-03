@@ -1,7 +1,17 @@
 "use client";
 
-import { MousePointer2, Layers, Check, Type, Volume2, Sunrise } from "lucide-react";
+import {
+  MousePointer2,
+  Layers,
+  Check,
+  Type,
+  Volume2,
+  Sunrise,
+  BookOpen,
+  ChevronRight,
+} from "lucide-react";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
+import { useAppStore } from "@/lib/stores/appStore";
 import type {
   ThemeName,
   FontFamilyName,
@@ -23,12 +33,18 @@ const THEMES: { name: ThemeName; label: string; swatch: string }[] = [
   { name: "nordic", label: "Nordic", swatch: "#eef2f1" },
   { name: "solar", label: "Solar", swatch: "#faf5eb" },
   { name: "monochrome", label: "Monochrome", swatch: "#f4f4f4" },
+  { name: "plum", label: "Plum", swatch: "#201a28" },
+  { name: "ember", label: "Ember", swatch: "#211915" },
+  { name: "slate", label: "Slate", swatch: "#172027" },
+  { name: "copper", label: "Copper", swatch: "#1d1b17" },
 ];
 
 const FONTS: { name: FontFamilyName; label: string }[] = [
   { name: "system", label: "System" },
   { name: "serif", label: "Serif" },
   { name: "mono", label: "Monospace" },
+  { name: "rounded", label: "Rounded" },
+  { name: "lora", label: "Lora" },
 ];
 
 const CURSORS: { name: CursorStyle; label: string; shape: string }[] = [
@@ -49,6 +65,7 @@ const CONTEXT_MENUS: { name: ContextMenuStyle; label: string; desc: string }[] =
 
 export function SettingsView() {
   const settings = useSettingsStore();
+  const openHelp = useAppStore((s) => s.openHelp);
   const {
     theme, fontFamily, fontSize,
     soundEnabled, hapticEnabled, reduceMotion,
@@ -207,6 +224,23 @@ export function SettingsView() {
             />
           ))}
         </OptionGrid>
+      </Section>
+
+      <Section icon={<BookOpen className="h-4 w-4" />} title="Help">
+        <p className="mb-3 text-sm text-text-tertiary">
+          Learn the ropes with a quick guided tour of every feature.
+        </p>
+        <button
+          type="button"
+          onClick={openHelp}
+          className="flex w-full items-center justify-between rounded-[var(--radius-md)] border border-border-subtle bg-surface-secondary px-4 py-3 text-left text-sm font-medium text-text-primary transition-colors hover:border-border-strong"
+        >
+          <span className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-accent" />
+            Open the user manual
+          </span>
+          <ChevronRight className="h-4 w-4 text-text-tertiary" />
+        </button>
       </Section>
     </div>
   );
