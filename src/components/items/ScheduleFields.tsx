@@ -26,6 +26,18 @@ const REMINDER_OPTIONS: { label: string; minutes: number | null }[] = [
   { label: "1 day before", minutes: 1440 },
 ];
 
+// Index matches Date.getDay(), so Sunday is first.
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+const DAY_LABELS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 const RECURRENCE_OPTIONS: { label: string; value?: RecurrenceRule }[] = [
   { label: "Does not repeat" },
   { label: "Daily", value: { type: "daily", interval: 1 } },
@@ -97,14 +109,24 @@ export function ScheduleFields({
       <div className="flex flex-wrap items-center gap-2">
         <Calendar className="h-4 w-4 shrink-0 text-text-tertiary" />
         {RECURRENCE_OPTIONS.map((opt) => {
-          const isActive =
-            recurrence?.type === opt.value?.type &&
-            recurrence?.interval === opt.value?.interval;
+          // Matched on type alone. Capture can set weekdays from a phrase such
+          // as "every monday", and comparing the whole rule made that show as
+          // unselected, so choosing Weekly again silently erased the days.
+          const isActive = recurrence?.type === opt.value?.type;
           return (
             <button
               key={opt.label}
               type="button"
-              onClick={() => onChange({ recurrence: opt.value })}
+              onClick={() =>
+                onChange({
+                  // Re-selecting the active option keeps the rule as it stands,
+                  // rather than replacing it with the bare preset and losing
+                  // any weekdays already on it.
+                  recurrence: isActive
+                    ? recurrence
+                    : opt.value && { ...opt.value },
+                })
+              }
               aria-pressed={isActive}
               className={cn(
                 "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
@@ -118,6 +140,44 @@ export function ScheduleFields({
           );
         })}
       </div>
+
+      {recurrence?.type === "weekly" && (
+        <div className="flex flex-wrap items-center gap-1.5 pl-6">
+          {WEEKDAYS.map((day, index) => {
+            const selected = recurrence.daysOfWeek?.includes(index) ?? false;
+            return (
+              <button
+                key={DAY_LABELS[index]}
+                type="button"
+                aria-pressed={selected}
+                aria-label={`Repeat on ${DAY_LABELS[index]}`}
+                onClick={() => {
+                  const current = recurrence.daysOfWeek ?? [];
+                  const next = selected
+                    ? current.filter((d) => d !== index)
+                    : [...current, index].sort((a, b) => a - b);
+                  onChange({
+                    recurrence: {
+                      ...recurrence,
+                      // No days selected means plain weekly, which is what the
+                      // rule already meant before any day was picked.
+                      daysOfWeek: next.length > 0 ? next : undefined,
+                    },
+                  });
+                }}
+                className={cn(
+                  "h-7 w-7 rounded-full border text-[11px] font-medium transition-colors",
+                  selected
+                    ? "border-accent bg-accent-soft text-accent"
+                    : "border-border-subtle text-text-tertiary hover:border-border-strong hover:text-text-secondary"
+                )}
+              >
+                {day}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
