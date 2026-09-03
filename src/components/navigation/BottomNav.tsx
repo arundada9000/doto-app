@@ -20,6 +20,7 @@ export function BottomNav() {
 
   return (
     <nav
+      data-translucent="surface"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border-subtle bg-surface/90 px-2 pb-[env(safe-area-inset-bottom)] pt-1.5 backdrop-blur-md md:hidden"
       aria-label="Main"
     >

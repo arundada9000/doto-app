@@ -34,6 +34,7 @@ function PageHeader({
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        data-translucent="bg"
         className={cn(
           "sticky top-0 z-10 border-b bg-bg backdrop-blur-md transition-[padding,border-color] duration-300",
           stuck ? "border-border-subtle py-2" : "border-transparent py-4"
