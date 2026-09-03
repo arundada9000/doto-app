@@ -161,6 +161,22 @@ platform does not support them.
 Background delivery needs Web Push, which requires a server, and is intentionally
 out of scope for V1 alongside sync.
 
+### Test
+
+```bash
+npm test
+```
+
+Vitest covers the pure logic where the subtle bugs live: the natural-language
+parser, recurrence rollover, and the date and streak maths. Component behaviour
+is deliberately not covered, since a DOM harness would cost more than it returns
+on a UI this visual. Tests sit beside the code they cover as `*.test.ts` and run
+in Node with no browser environment.
+
+```bash
+npm run test:watch
+```
+
 ## Offline Usage
 
 To test offline behavior, build and serve the app, then go offline in your DevTools Network panel. The application shell loads from the service worker cache and new items persist to IndexedDB immediately.

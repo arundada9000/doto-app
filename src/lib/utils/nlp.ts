@@ -56,6 +56,18 @@ function parseTime(text: string): { hour: number; minute: number } | null {
     return { hour, minute: 0 };
   }
 
+  // A bare hour, as in "Call Ram tomorrow at 10". Without this the hour was
+  // dropped entirely and the item fell back to midnight. Everyday usage reads
+  // "at 3" as the afternoon and "at 9" as the morning, so the small hours are
+  // taken as PM; 13 to 23 are already unambiguous.
+  const bareHour = trimmed.match(/^(\d{1,2})$/);
+  if (bareHour) {
+    let hour = parseInt(bareHour[1], 10);
+    if (hour > 23) return null;
+    if (hour >= 1 && hour <= 6) hour += 12;
+    return { hour, minute: 0 };
+  }
+
   const wordTime = trimmed.match(/^(noon|midnight|morning|afternoon|evening|night)$/);
   if (wordTime) {
     switch (wordTime[1]) {
@@ -214,12 +226,13 @@ export function parseCapture(raw: string): ParsedCapture {
     text = text.replace(nextMatch[0], " ").replace(/\s+/g, " ").trim();
   }
 
-  // Extract a trailing time token like "at 10", "10am", "5pm"
+  // Extract a trailing time token like "at 10", "10am", "5pm". The time is
+  // remembered rather than applied here: a date token found further down
+  // replaces dueAt outright, which would otherwise reset the time to midnight.
+  let timeText: string | undefined;
   const timeAtMatch = text.match(/\b(at\s+)?(\d{1,2}([:.]\d{2})?\s*(am|pm)?|noon|midnight|morning|afternoon|evening|night)\b/i);
   if (timeAtMatch) {
-    const timeStr = timeAtMatch[0].replace(/^at\s+/i, "");
-    const base = dueAt ?? startOfDay(ref).getTime();
-    dueAt = applyTime(base, timeStr);
+    timeText = timeAtMatch[0].replace(/^at\s+/i, "");
     const pattern = timeAtMatch[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text
       .replace(new RegExp(`\\b${pattern}\\b`, "i"), " ")
@@ -237,6 +250,11 @@ export function parseCapture(raw: string): ParsedCapture {
         text = text.replace(re, " ").replace(/\s+/g, " ").trim();
       }
     }
+  }
+
+  // Applied last, over whichever day was resolved above.
+  if (timeText) {
+    dueAt = applyTime(dueAt ?? startOfDay(ref).getTime(), timeText);
   }
 
   title = text.trim();
