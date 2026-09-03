@@ -6,17 +6,19 @@ import { absoluteUrl, siteName } from "@/lib/site";
 import { SiteFooter, SiteHeader } from "@/components/marketing/SiteChrome";
 
 const TITLE = "Writing on capture, offline-first apps, and getting things done";
+// Shorter, so the tab and the search result are not cut off mid-phrase.
+const META_TITLE = "Writing on capture and offline-first apps";
 const DESCRIPTION =
   "Articles on offline-first architecture, quick capture habits, local-first privacy, and using DoTo well. No newsletter, no sign-up.";
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: META_TITLE,
   description: DESCRIPTION,
   alternates: { canonical: absoluteUrl("/blog") },
   openGraph: {
     type: "website",
     url: absoluteUrl("/blog"),
-    title: TITLE,
+    title: META_TITLE,
     description: DESCRIPTION,
     siteName,
   },

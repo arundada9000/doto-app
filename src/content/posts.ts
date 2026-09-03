@@ -9,6 +9,12 @@ export interface PostSection {
 export interface Post {
   slug: string;
   title: string;
+  /**
+   * Shorter title for the browser tab and search results, used when the display
+   * title plus the site suffix would run past what a result actually shows.
+   * Falls back to title.
+   */
+  metaTitle?: string;
   /** Meta description and the excerpt shown on the index. Keep under 160. */
   description: string;
   published: string;
@@ -25,6 +31,7 @@ const POSTS: Post[] = [
   {
     slug: "offline-first-todo-app",
     title: "Why an offline-first to-do app is faster than a cloud one",
+    metaTitle: "Why offline-first to-do apps are faster",
     description:
       "Cloud task apps wait on a network round trip before they feel finished. An offline-first app writes locally and is done. Here is what that changes in practice.",
     published: "2026-09-03",
@@ -81,6 +88,7 @@ const POSTS: Post[] = [
   {
     slug: "install-doto-as-an-app",
     title: "How to install DoTo as an app on iPhone, Android, and desktop",
+    metaTitle: "Install DoTo on iPhone, Android, and desktop",
     description:
       "DoTo is a progressive web app, so it installs from the browser with no app store. Step-by-step instructions for iOS, Android, Windows, and macOS.",
     published: "2026-09-03",
@@ -157,6 +165,7 @@ const POSTS: Post[] = [
   {
     slug: "quick-capture-habit",
     title: "Quick capture: the two-second habit that empties your head",
+    metaTitle: "Quick capture: the two-second habit",
     description:
       "Most task systems fail at the moment of capture, not the moment of doing. Why the time between thought and saved note is the number that matters.",
     published: "2026-09-03",
@@ -273,6 +282,7 @@ const POSTS: Post[] = [
   {
     slug: "local-first-privacy",
     title: "Your tasks should not live on someone else's server",
+    metaTitle: "Why your tasks should not live on a server",
     description:
       "A to-do list is a detailed record of your life, obligations, and health. Local-first storage means that record never leaves the device it was written on.",
     published: "2026-09-03",

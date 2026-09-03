@@ -14,8 +14,12 @@ export const siteName = "DoTo";
 export const siteTagline =
   "Capture it instantly. Organize it later. Finish it beautifully.";
 
+/**
+ * Kept under 160 characters so search results show it whole rather than
+ * truncating mid-sentence. The longer pitch lives on the page itself.
+ */
 export const siteDescription =
-  "DoTo is a free, offline-first task and note app that opens straight into a capture box. Type a thought, press enter, and get on with your day. No account, no sync, no tracking: everything stays on your device.";
+  "A free, offline-first task and note app that opens straight into a capture box. No account, no tracking, and everything stays on your device.";
 
 /**
  * Absolute URL for a path, matching the trailing slash the export actually

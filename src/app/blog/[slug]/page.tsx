@@ -22,7 +22,7 @@ export async function generateMetadata({
 
   const url = absoluteUrl(`/blog/${post.slug}`);
   return {
-    title: post.title,
+    title: post.metaTitle ?? post.title,
     description: post.description,
     alternates: { canonical: url },
     openGraph: {
