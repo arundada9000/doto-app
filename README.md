@@ -18,6 +18,10 @@ The user should never be forced to organize something before capturing it. Captu
 - Instant-focus Quick Capture (Ctrl+K)
 - Natural language parsing: type `Call Ram tomorrow at 10` and DoTo understands the title, date, and time
 - Capture is never mandatory to interpret: type `Buy milk` and it simply saves
+- Tags with autocomplete: type `#` and DoTo suggests tags you already use
+- Smart paste: a multi-line paste can land as separate items or one checklist, and an image pastes straight in as an attachment
+- Voice capture where the browser supports speech recognition
+- Command mode: type `>` in the capture field to jump to a view or open the manual
 - Keyboard capture (`Ctrl+K`, `N`, `/`, `T`, `I`, `C`)
 - PWA app shortcuts and share target
 
@@ -26,13 +30,14 @@ The user should never be forced to organize something before capturing it. Captu
 - Tasks, notes, and checklists
 - Due dates and times
 - Recurring tasks
-- Reminders
+- Reminders that notify you, as a system notification where permitted and always inside the app
 - Tags
 - Attachments and links
+- Drag to reorder the unsorted Inbox
 
 **Views**
 - Inbox: everything captured lands here, friction-free
-- Today: a focused view of todays tasks and reminders
+- Today: a focused view of today's tasks and reminders, with a progress ring, daily streak, and one-tap carry-over for anything overdue
 - Completed: a quiet record of everything finished
 - Search: instant across tasks, notes, tags, and links
 
@@ -42,6 +47,21 @@ The user should never be forced to organize something before capturing it. Captu
 - 12 professionally designed themes
 - Full keyboard, touch, and accessibility support
 - Offline-first by design
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Ctrl/Cmd + K` | Quick Capture |
+| `/` or `Ctrl/Cmd + F` | Search |
+| `I` / `T` / `C` / `S` | Inbox, Today, Completed, Settings |
+| `J` / `K` or arrows | Move between items |
+| `Space` | Complete the focused item |
+| `Enter` | Open the focused item |
+| `?` | Keyboard shortcuts |
+| `Esc` | Close the topmost layer |
+
+Inside Quick Capture, `#` opens tag suggestions and `>` switches to command mode.
 
 ## Tech Stack
 
@@ -127,6 +147,18 @@ The static export is written to `out/`. Serve it from any static host.
 ```bash
 npm run lint
 ```
+
+## Reminders
+
+Reminders are delivered while DoTo is open. V1 has no server and no push
+subscription, so there is nothing to wake the app in the background. Where
+notification permission is granted a reminder raises a system notification, and
+in every case it also appears as an in-app toast with a sound and a haptic, so
+the behaviour degrades predictably when notifications are blocked or the
+platform does not support them.
+
+Background delivery needs Web Push, which requires a server, and is intentionally
+out of scope for V1 alongside sync.
 
 ## Offline Usage
 

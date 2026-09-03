@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { Plus, Inbox, Sun, CheckCircle2, Settings } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -74,11 +75,26 @@ function MobileNavButton({
       aria-label={label}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex h-14 w-14 flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] transition-colors",
+        "relative flex h-14 w-14 flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] transition-colors",
         active ? "text-accent" : "text-text-tertiary"
       )}
     >
-      {icon}
+      {/* One shared indicator slides between tabs rather than each tab
+          fading its own, so the movement reads as a single object. */}
+      {active && (
+        <motion.span
+          layoutId="bottom-nav-active"
+          aria-hidden
+          className="absolute inset-x-2 inset-y-1 -z-10 rounded-[var(--radius-md)] bg-accent-soft"
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+        />
+      )}
+      <motion.span
+        animate={{ scale: active ? 1.08 : 1, y: active ? -1 : 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+      >
+        {icon}
+      </motion.span>
     </button>
   );
 }

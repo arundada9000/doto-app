@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Inbox, Sun, CheckCircle2, Flame, CalendarArrowDown } from "lucide-react";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useToastStore } from "@/lib/stores/toastStore";
 import { useHaptics } from "@/lib/hooks/useHaptics";
+import { useSound } from "@/lib/hooks/useSound";
 import { greetingFor, currentStreak, dayKey } from "@/lib/utils/dates";
 import { ItemList } from "@/components/items/ItemList";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -23,21 +24,76 @@ function PageHeader({
   subtitle: string;
   greeting?: string;
 }) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+
+  // A sentinel above the header reports the stuck state without listening to
+  // scroll, so nothing runs per frame while the list is moving.
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setStuck(!entry.isIntersecting),
+      { threshold: 1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="sticky top-0 z-10 border-b border-border-subtle bg-bg py-4 backdrop-blur-md"
-    >
-      {greeting && (
-        <p className="px-4 pb-1 text-sm text-accent md:px-6">{greeting}</p>
-      )}
-      <h1 className="px-4 text-2xl font-semibold tracking-tight text-text-primary md:px-6">
-        {title}
-      </h1>
-      <p className="px-4 pt-0.5 text-sm text-text-secondary md:px-6">{subtitle}</p>
-    </motion.header>
+    <>
+      <div ref={sentinelRef} aria-hidden className="h-px w-full" />
+      <motion.header
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
+          "sticky top-0 z-10 border-b bg-bg backdrop-blur-md transition-[padding,border-color] duration-300",
+          stuck ? "border-border-subtle py-2" : "border-transparent py-4"
+        )}
+      >
+        <AnimatePresence initial={false}>
+          {greeting && !stuck && (
+            <motion.p
+              key="greeting"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden px-4 pb-1 text-sm text-accent md:px-6"
+            >
+              {greeting}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        <motion.h1
+          layout="position"
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className={cn(
+            "px-4 font-semibold tracking-tight text-text-primary transition-[font-size] duration-300 md:px-6",
+            stuck ? "text-lg" : "text-2xl"
+          )}
+        >
+          {title}
+        </motion.h1>
+
+        <AnimatePresence initial={false}>
+          {!stuck && (
+            <motion.p
+              key="subtitle"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden px-4 pt-0.5 text-sm text-text-secondary md:px-6"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </motion.header>
+    </>
   );
 }
 
@@ -301,6 +357,25 @@ function TodaySummary({
   progress: number;
   streak: number;
 }) {
+  const { play } = useSound();
+  const { vibrate } = useHaptics();
+  const [finished, setFinished] = useState(false);
+  const previousProgress = useRef(progress);
+
+  // Fires on the crossing into a cleared day, not on the state of being
+  // cleared, so reopening Today later stays quiet.
+  useEffect(() => {
+    const was = previousProgress.current;
+    previousProgress.current = progress;
+    if (was < 1 && progress >= 1 && doneToday > 0) {
+      setFinished(true);
+      play("dayComplete");
+      vibrate("success");
+      const id = setTimeout(() => setFinished(false), 1200);
+      return () => clearTimeout(id);
+    }
+  }, [progress, doneToday, play, vibrate]);
+
   if (doneToday === 0 && plannedToday === 0 && streak === 0) return null;
 
   return (
@@ -310,7 +385,7 @@ function TodaySummary({
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       className="flex items-center gap-4 border-b border-border-subtle px-4 py-3 md:px-6"
     >
-      <ProgressRing value={progress} size={56} stroke={5} />
+      <ProgressRing value={progress} size={56} stroke={5} complete={finished} />
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-text-primary">
           {doneToday > 0 ? (

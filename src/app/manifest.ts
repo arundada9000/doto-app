@@ -3,7 +3,18 @@ import type { MetadataRoute } from "next";
 export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
+  // share_target is a valid manifest member that the Next.js type does not
+  // model, so the object is widened once here rather than loosened throughout.
+  const shareTarget = {
+    share_target: {
+      action: "/inbox/",
+      method: "GET",
+      params: { title: "title", text: "text", url: "url" },
+    },
+  } as Partial<MetadataRoute.Manifest>;
+
   return {
+    ...shareTarget,
     name: "DoTo - Capture it instantly",
     short_name: "DoTo",
     description:

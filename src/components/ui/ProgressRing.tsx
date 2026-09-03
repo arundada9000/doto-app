@@ -7,11 +7,14 @@ export function ProgressRing({
   size = 64,
   stroke = 5,
   label,
+  complete = false,
 }: {
   value: number;
   size?: number;
   stroke?: number;
   label?: string;
+  /** Everything due today is done. Earns one pulse, not a permanent state. */
+  complete?: boolean;
 }) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -26,6 +29,15 @@ export function ProgressRing({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
+      {complete && (
+        <motion.span
+          aria-hidden
+          className="absolute inset-0 rounded-full bg-secondary-color"
+          initial={{ opacity: 0.35, scale: 0.9 }}
+          animate={{ opacity: 0, scale: 1.5 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        />
+      )}
       <svg width={size} height={size} className="-rotate-90">
         <circle
           cx={size / 2}
