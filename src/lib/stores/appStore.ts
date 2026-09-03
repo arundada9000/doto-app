@@ -21,9 +21,14 @@ interface AppState {
   editingItemId: string | null;
   openItem: (id: string) => void;
   closeItem: () => void;
+  /**
+   * Dismisses the topmost open layer and reports whether there was one.
+   * Escape closes a single layer at a time rather than every open surface.
+   */
+  closeTopLayer: () => boolean;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>((set, get) => ({
   quickCaptureOpen: false,
   openQuickCapture: () => set({ quickCaptureOpen: true }),
   closeQuickCapture: () => set({ quickCaptureOpen: false }),
@@ -50,4 +55,16 @@ export const useAppStore = create<AppState>((set) => ({
   editingItemId: null,
   openItem: (editingItemId) => set({ editingItemId }),
   closeItem: () => set({ editingItemId: null }),
+
+  closeTopLayer: () => {
+    const s = get();
+    // Ordered outermost-last: whichever surface sits on top gives way first.
+    if (s.shortcutsOpen) return set({ shortcutsOpen: false }), true;
+    if (s.onboardOpen) return set({ onboardOpen: false }), true;
+    if (s.helpOpen) return set({ helpOpen: false }), true;
+    if (s.quickCaptureOpen) return set({ quickCaptureOpen: false }), true;
+    if (s.editingItemId !== null) return set({ editingItemId: null }), true;
+    if (s.searchOpen) return set({ searchOpen: false }), true;
+    return false;
+  },
 }));

@@ -1,11 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Inbox, Sun, CheckCircle2 } from "lucide-react";
+import { Inbox, Sun, CheckCircle2, Flame } from "lucide-react";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
-import { greetingFor } from "@/lib/utils/dates";
+import { greetingFor, currentStreak, dayKey } from "@/lib/utils/dates";
 import { ItemList } from "@/components/items/ItemList";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ProgressRing } from "@/components/ui/ProgressRing";
@@ -139,6 +140,14 @@ export function TodayView() {
   const totalToday = doneToday + plannedToday;
   const progress = totalToday > 0 ? doneToday / totalToday : 0;
 
+  const streak = useMemo(() => {
+    const doneDays = new Set<string>();
+    for (const i of items) {
+      if (i.completed && i.completedAt) doneDays.add(dayKey(i.completedAt));
+    }
+    return currentStreak(doneDays);
+  }, [items]);
+
   if (loading) {
     return <Skeleton />;
   }
@@ -151,6 +160,7 @@ export function TodayView() {
         doneToday={doneToday}
         plannedToday={plannedToday}
         progress={progress}
+        streak={streak}
       />
 
       {overdueItems.length === 0 && todaysItems.length === 0 ? (
@@ -223,16 +233,42 @@ export function CompletedView() {
   );
 }
 
+function StreakBadge({ streak }: { streak: number }) {
+  const dayWord = streak === 1 ? "day" : "days";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.12 }}
+      className="flex shrink-0 items-center gap-1.5 rounded-[var(--radius-md)] border border-border-subtle bg-surface px-2.5 py-1.5"
+    >
+      <Flame className="h-4 w-4 text-accent" aria-hidden />
+      <span
+        className="text-sm font-semibold tabular-nums text-text-primary"
+        aria-hidden
+      >
+        {streak}
+      </span>
+      <span className="sr-only">
+        Current streak: {streak} consecutive {dayWord} with a completed task.
+      </span>
+    </motion.div>
+  );
+}
+
 function TodaySummary({
   doneToday,
   plannedToday,
   progress,
+  streak,
 }: {
   doneToday: number;
   plannedToday: number;
   progress: number;
+  streak: number;
 }) {
-  if (doneToday === 0 && plannedToday === 0) return null;
+  if (doneToday === 0 && plannedToday === 0 && streak === 0) return null;
 
   return (
     <motion.div
@@ -242,7 +278,7 @@ function TodaySummary({
       className="flex items-center gap-4 border-b border-border-subtle px-4 py-3 md:px-6"
     >
       <ProgressRing value={progress} size={56} stroke={5} />
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-text-primary">
           {doneToday > 0 ? (
             <>
@@ -250,7 +286,7 @@ function TodaySummary({
               {doneToday === 1 ? "task" : "tasks"} today
             </>
           ) : (
-            "Nothing wrapped up yet — go get one."
+            "Nothing wrapped up yet. Go get one."
           )}
         </p>
         {plannedToday > 0 && (
@@ -259,7 +295,13 @@ function TodaySummary({
             plate.
           </p>
         )}
+        {plannedToday === 0 && streak > 0 && (
+          <p className="mt-0.5 text-xs text-text-tertiary">
+            {streak} {streak === 1 ? "day" : "days"} running.
+          </p>
+        )}
       </div>
+      {streak > 0 && <StreakBadge streak={streak} />}
     </motion.div>
   );
 }

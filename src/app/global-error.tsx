@@ -6,7 +6,7 @@ const LINES = [
   "A task exploded. Our bad.",
   "Even DoTo dropped something.",
   "The app tripped over its own checklist.",
-  "Technical hiccup — nothing you did, promise.",
+  "Technical hiccup. Nothing you did, promise.",
 ];
 
 const line = LINES[new Date().getDate() % LINES.length];
@@ -83,7 +83,7 @@ export default function GlobalError({
               {line}
               <br />
               <span style={{ color: "var(--text-tertiary)" }}>
-                Your data is untouched — this is just a display slip.
+                Your data is untouched. This is just a display slip.
               </span>
             </p>
           </div>

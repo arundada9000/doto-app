@@ -15,7 +15,7 @@ const STEPS: {
   {
     icon: Zap,
     title: "Capture in a second",
-    body: "Tap the Capture button or press Ctrl+K and just type. Don't organize yet — DoTo figures out tasks vs. notes as you type.",
+    body: "Tap the Capture button or press Ctrl+K and just type. There is no need to organize first, because DoTo tells tasks and notes apart as you type.",
   },
   {
     icon: ListTodo,
@@ -35,12 +35,12 @@ const STEPS: {
   {
     icon: MousePointerClick,
     title: "Satisfying to finish",
-    body: "Swipe a task, or tick the circle. You'll get a little reward — pick your favourite in Settings.",
+    body: "Swipe a task, or tick the circle. Completing one plays a short reward that you can choose in Settings.",
   },
   {
     icon: Palette,
     title: "Make it yours",
-    body: "Themes, fonts, cursors, sounds — everything in Settings. And it all works offline, on your device only.",
+    body: "Themes, fonts, cursors, and sounds all live in Settings. Everything works offline, on your device only.",
   },
 ];
 

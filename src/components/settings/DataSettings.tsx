@@ -135,8 +135,9 @@ export function DataSettings() {
             >
               <p className="text-sm text-text-secondary">
                 This permanently deletes{" "}
-                <span className="font-medium text-error">everything</span> —
-                tasks, notes, settings. No undo. Consider an export first.
+                <span className="font-medium text-error">everything</span>:
+                tasks, notes, and settings. There is no undo. Consider an export
+                first.
               </p>
               <div className="flex flex-wrap gap-2">
                 <button

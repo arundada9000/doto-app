@@ -5,7 +5,7 @@ import { Home, RotateCw } from "lucide-react";
 
 const LINES = [
   "This page got lost between a task and a note.",
-  "404 — even our search can't find this one.",
+  "404. Even our search cannot find this one.",
   "You swiped this page away by mistake.",
   "Nothing here. Not even a half-finished checklist.",
 ];

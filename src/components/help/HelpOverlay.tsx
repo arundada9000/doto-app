@@ -31,7 +31,7 @@ const TOPICS: {
     icon: ListTodo,
     section: "02 · Organize",
     title: "Tasks & notes",
-    body: "DoTo sorts as you type — a line looks like a task becomes a task, anything else a note. Open any item to edit notes, tags, and attachments.",
+    body: "DoTo sorts as you type. A line that looks like a task becomes a task, anything else becomes a note. Open any item to edit notes, tags, and attachments.",
   },
   {
     icon: CalendarClock,
@@ -49,13 +49,13 @@ const TOPICS: {
     icon: Search,
     section: "05 · Find",
     title: "Search it all",
-    body: "Press / or use the search bar in the sidebar to find anything — titles, notes, tags, and pasted links — in a single keystroke.",
+    body: "Press / or use the search bar in the sidebar to find titles, notes, tags, and pasted links in a single keystroke.",
   },
   {
     icon: MousePointerClick,
     section: "06 · Gestures",
     title: "Swipe & right-click",
-    body: "Swipe a task left to delete or right to complete. Right-click any item (desktop) for a quick menu — pick its style in Settings.",
+    body: "Swipe a task left to delete or right to complete. Right-click any item on desktop for a quick menu. Pick its style in Settings.",
   },
   {
     icon: Palette,
@@ -67,7 +67,7 @@ const TOPICS: {
     icon: WifiOff,
     section: "08 · Offline-first",
     title: "Private & offline",
-    body: "DoTo works fully offline and keeps everything on your device. Nothing is sent to a server — installable as an app, ready anywhere.",
+    body: "DoTo works fully offline and keeps everything on your device. Nothing is sent to a server, and it installs as an app so it is ready anywhere.",
   },
 ];
 

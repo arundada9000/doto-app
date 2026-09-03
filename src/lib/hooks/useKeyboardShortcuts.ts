@@ -37,13 +37,15 @@ export function useKeyboardShortcuts() {
         return;
       }
 
-      if (isTyping) return;
-
-      if (e.key === "Escape") {
-        useAppStore.getState().closeQuickCapture();
-        useAppStore.getState().closeSearch();
+      if (e.key === "Escape" && !e.isComposing) {
+        if (useAppStore.getState().closeTopLayer()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         return;
       }
+
+      if (isTyping) return;
 
       if (e.key === "n") {
         e.preventDefault();

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSettingsStore } from "@/lib/stores/settingsStore";
+import type { CompletionStyle } from "@/types";
 import { cn } from "@/lib/utils/cn";
 
 const CONFETTI_COLORS = [
@@ -19,22 +19,21 @@ function rand(i: number): number {
   return x - Math.floor(x);
 }
 
-export function CompletionCelebration() {
-  const completion = useSettingsStore((s) => s.completion);
-  const reduceMotion = useSettingsStore((s) => s.reduceMotion);
-
-  if (completion === "none" || reduceMotion) return null;
+/**
+ * Positioned by CelebrationLayer over the item that was completed. The root is
+ * deliberately not clipped: particles travel further than the row is tall, and
+ * an overflow-hidden ancestor would swallow most of the effect.
+ */
+export function CompletionCelebration({ style }: { style: CompletionStyle }) {
+  if (style === "none") return null;
 
   return (
-    <span
-      aria-hidden
-      className="pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--radius-md)]"
-    >
-      {completion === "confetti" && <ConfettiEffect />}
-      {completion === "strikethrough" && <StrikethroughEffect />}
-      {completion === "burn" && <BurnEffect />}
-      {completion === "melt" && <MeltEffect />}
-      {completion === "check" && <CheckEffect />}
+    <span aria-hidden className="pointer-events-none absolute inset-0">
+      {style === "confetti" && <ConfettiEffect />}
+      {style === "strikethrough" && <StrikethroughEffect />}
+      {style === "burn" && <BurnEffect />}
+      {style === "melt" && <MeltEffect />}
+      {style === "check" && <CheckEffect />}
     </span>
   );
 }
@@ -188,7 +187,9 @@ function CheckEffect() {
       <motion.span
         className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary-color shadow-md"
         initial={{ scale: 0, rotate: -30 }}
-        animate={{ scale: [0, 1.15, 1], rotate: [0, 0, 0] }}
+        animate={{ scale: 1, rotate: 0 }}
+        // A spring takes exactly two keyframes. The overshoot past 1 comes from
+        // the spring itself rather than an intermediate keyframe.
         transition={{ type: "spring", stiffness: 420, damping: 18 }}
       >
         <motion.svg

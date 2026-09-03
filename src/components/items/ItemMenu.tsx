@@ -7,6 +7,8 @@ import { MoreVertical, Pencil, Check, RotateCcw, Trash2 } from "lucide-react";
 import type { Item } from "@/types";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
+import { useSettingsStore } from "@/lib/stores/settingsStore";
+import { useCelebrationStore } from "@/lib/stores/celebrationStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
@@ -20,6 +22,9 @@ export function ItemMenu({ item }: { item: Item }) {
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
+  const completion = useSettingsStore((s) => s.completion);
+  const reduceMotion = useSettingsStore((s) => s.reduceMotion);
+  const celebrate = useCelebrationStore((s) => s.celebrate);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -66,9 +71,21 @@ export function ItemMenu({ item }: { item: Item }) {
         vibrate("light");
       });
     } else {
+      // The menu button sits inside the item row, so the row is the anchor the
+      // effect should play over once the item leaves the list.
+      const row = btnRef.current?.closest("[data-item-id]");
+      if (row && !reduceMotion) {
+        const rect = row.getBoundingClientRect();
+        celebrate(completion, {
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
       action(() => {
         completeItem(item.id);
-        play("complete");
+        play("complete", completion);
         vibrate("success");
       });
     }

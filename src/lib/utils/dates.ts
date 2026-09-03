@@ -94,3 +94,25 @@ export function greetingFor(name?: string): string {
     "Good evening";
   return name?.trim() ? `${greeting}, ${name.trim()}` : greeting;
 }
+
+export function dayKey(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+export function currentStreak(doneDays: Set<string>): number {
+  if (doneDays.size === 0) return 0;
+
+  let streak = 0;
+  const cursor = new Date();
+  // Allow an empty "today" to keep a streak alive until end of day
+  if (!doneDays.has(dayKey(cursor.getTime()))) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  while (doneDays.has(dayKey(cursor.getTime()))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}

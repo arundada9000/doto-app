@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Paperclip, Clock, Link2 } from "lucide-react";
 import type { Item } from "@/types";
@@ -14,7 +14,7 @@ import { formatRelative } from "@/lib/utils/dates";
 import { cn } from "@/lib/utils/cn";
 import { Swipeable } from "@/components/items/Swipeable";
 import { ItemMenu } from "@/components/items/ItemMenu";
-import { CompletionCelebration } from "@/components/items/CompletionCelebration";
+import { useCelebrationStore } from "@/lib/stores/celebrationStore";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
   const { completeItem, uncompleteItem } = useItemsStore();
@@ -23,18 +23,30 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
   const { play } = useSound();
   const { vibrate } = useHaptics();
   const completion = useSettingsStore((s) => s.completion);
-  const [celebrating, setCelebrating] = useState(false);
+  const reduceMotion = useSettingsStore((s) => s.reduceMotion);
+  const celebrate = useCelebrationStore((s) => s.celebrate);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   const toggle = () => {
     if (item.completed) {
       uncompleteItem(item.id);
       return;
     }
-    setCelebrating(true);
+    // Capture the row position before completing: the item leaves the list on
+    // the next render, and the effect needs somewhere to play.
+    const row = rowRef.current;
+    if (row && !reduceMotion) {
+      const rect = row.getBoundingClientRect();
+      celebrate(completion, {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+    }
     completeItem(item.id);
     play("complete", completion);
     vibrate("success");
-    setTimeout(() => setCelebrating(false), 950);
   };
 
   const open = () => openItem(item.id);
@@ -64,12 +76,12 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
         }}
       >
         <div
+          ref={rowRef}
           role="button"
           tabIndex={0}
           onClick={open}
           onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
           className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
-        {celebrating && <CompletionCelebration />}
         <button
           type="button"
           onClick={(e) => {
