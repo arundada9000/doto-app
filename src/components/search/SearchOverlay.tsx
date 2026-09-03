@@ -6,7 +6,6 @@ import { Search, X } from "lucide-react";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import type { Item } from "@/types";
-
 export function SearchOverlay() {
   const open = useAppStore((s) => s.searchOpen);
   const close = useAppStore((s) => s.closeSearch);
@@ -106,11 +105,15 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
 }
 
 function SearchResult({ item, onClose }: { item: Item; onClose: () => void }) {
+  const openItem = useAppStore((s) => s.openItem);
   return (
     <li>
       <button
         type="button"
-        onClick={onClose}
+        onClick={() => {
+          onClose();
+          openItem(item.id);
+        }}
         className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-left hover:bg-hover"
       >
         <span className="min-w-0 flex-1">
