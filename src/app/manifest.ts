@@ -19,7 +19,9 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "DoTo",
     description:
       "A frictionless personal capture system that happens to have tasks. Capture it instantly. Organize it later. Finish it beautifully.",
-    start_url: "/",
+    // The landing page lives at "/", so an installed app opens the Inbox
+    // instead of the marketing page every launch.
+    start_url: "/inbox/",
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",

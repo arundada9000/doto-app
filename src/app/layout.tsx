@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 import {
   Geist,
   Geist_Mono,
@@ -7,8 +6,12 @@ import {
   Nunito,
   Lora,
 } from "next/font/google";
-import { AppProvider } from "@/providers/AppProvider";
-import { AppShell } from "@/components/layout/AppShell";
+import {
+  siteName,
+  siteDescription,
+  siteUrl,
+  siteUrlConfigured,
+} from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,13 +43,40 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
+  // Resolves every relative URL below, and the canonical tags on each route.
+  metadataBase: new URL(siteUrl),
   title: {
     default: "DoTo - Capture it instantly",
     template: "%s · DoTo",
   },
-  description:
-    "A frictionless personal capture system that happens to have tasks. Capture it instantly. Organize it later. Finish it beautifully.",
+  description: siteDescription,
   applicationName: "DoTo",
+  keywords: [
+    "offline todo app",
+    "task app without an account",
+    "quick capture app",
+    "private notes app",
+    "PWA task manager",
+    "local-first to-do list",
+  ],
+  // Until a real origin is supplied the canonical URLs would point at a
+  // placeholder, so nothing is indexed rather than indexing the wrong host.
+  robots: siteUrlConfigured
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
+  openGraph: {
+    type: "website",
+    siteName,
+    title: "DoTo - Capture it instantly",
+    description: siteDescription,
+    url: "/",
+    locale: "en",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DoTo - Capture it instantly",
+    description: siteDescription,
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -81,13 +111,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${nunito.variable} ${lora.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full font-sans">
-        <AppProvider>
-          <Suspense>
-            <AppShell>{children}</AppShell>
-          </Suspense>
-        </AppProvider>
-      </body>
+      <body className="min-h-full font-sans">{children}</body>
     </html>
   );
 }

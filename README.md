@@ -149,6 +149,29 @@ The static export is written to `out/`. Serve it from any static host.
 npm run lint
 ```
 
+## Deployment
+
+The static export in `out/` can be served from any static host or CDN.
+
+Set the origin before building, so canonical URLs, the sitemap, and social card
+images point at the right place:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.example npm run build
+```
+
+Until that variable is set, every page is marked `noindex` and `robots.txt`
+disallows crawling. This is deliberate: a build with an unknown origin would
+otherwise publish canonical URLs pointing at a placeholder host.
+
+### Routes
+
+`/` is a static landing page describing the app, and is the only route in the
+sitemap. `/inbox`, `/today`, `/completed`, and `/settings` are the app itself.
+They render only local data, so they are excluded from the sitemap, marked
+`noindex`, and disallowed in `robots.txt`. The installed PWA starts at `/inbox/`
+so it skips the landing page on every launch.
+
 ## Reminders
 
 Reminders are delivered while DoTo is open. V1 has no server and no push
