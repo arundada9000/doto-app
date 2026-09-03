@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { MoreVertical, Pencil, Check, RotateCcw, Trash2 } from "lucide-react";
 import type { Item } from "@/types";
@@ -11,32 +12,48 @@ import { useHaptics } from "@/lib/hooks/useHaptics";
 
 export function ItemMenu({ item }: { item: Item }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
 
+  const close = useCallback(() => setOpen(false), []);
+
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (open) {
+      close();
+      return;
+    }
+    const rect = btnRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const menuTop = Math.max(8, rect.bottom + 6);
+    const menuLeft = Math.max(8, rect.right - 176);
+    setPos({ top: menuTop, left: menuLeft });
+    setOpen(true);
+  };
+
   useEffect(() => {
     if (!open) return;
-    const onDocClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
+    const onScroll = () => close();
+    const onResize = () => close();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
-    document.addEventListener("mousedown", onDocClick);
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
     document.addEventListener("keydown", onKey);
     return () => {
-      document.removeEventListener("mousedown", onDocClick);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onResize);
       document.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, close]);
 
   const action = (fn: () => void) => {
-    setOpen(false);
+    close();
     fn();
   };
 
@@ -56,62 +73,84 @@ export function ItemMenu({ item }: { item: Item }) {
   };
 
   return (
-    <div ref={ref} className="relative">
+    <>
       <button
+        ref={btnRef}
         type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen((o) => !o);
-        }}
+        onClick={toggle}
         aria-label="Item actions"
         aria-expanded={open}
+        aria-haspopup="menu"
         className="rounded p-1 text-text-tertiary transition-all hover:bg-hover hover:text-text-primary [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
       >
         <MoreVertical className="h-4 w-4" />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            role="menu"
-            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-            transition={{ duration: 0.12 }}
-            className="absolute right-0 top-8 z-30 w-40 overflow-hidden rounded-[var(--radius-md)] border border-border-subtle bg-surface-raised p-1 shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <MenuItem
-              icon={<Pencil className="h-4 w-4" />}
-              label="Edit"
-              onClick={() => action(() => openItem(item.id))}
-            />
-            <MenuItem
-              icon={
-                item.completed ? (
-                  <RotateCcw className="h-4 w-4" />
-                ) : (
-                  <Check className="h-4 w-4" />
-                )
-              }
-              label={item.completed ? "Mark not done" : "Complete"}
-              onClick={toggleComplete}
-            />
-            <MenuItem
-              icon={<Trash2 className="h-4 w-4" />}
-              label="Delete"
-              danger
-              onClick={() =>
-                action(async () => {
-                  await deleteItem(item.id);
-                  play("confirm");
-                })
-              }
-            />
-          </motion.div>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {open && pos && (
+              <>
+                <motion.div
+                  key="backdrop"
+                  className="fixed inset-0 z-40"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.12 }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    close();
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    close();
+                  }}
+                />
+                <motion.div
+                  key="menu"
+                  role="menu"
+                  initial={{ opacity: 0, scale: 0.96, y: -6 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: -6 }}
+                  transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ top: pos.top, left: pos.left }}
+                  className="fixed z-50 w-44 overflow-hidden rounded-[var(--radius-md)] border border-border-subtle bg-surface-raised p-1 shadow-xl"
+                >
+                  <MenuItem
+                    icon={<Pencil className="h-4 w-4" />}
+                    label="Edit"
+                    onClick={() => action(() => openItem(item.id))}
+                  />
+                  <MenuItem
+                    icon={
+                      item.completed ? (
+                        <RotateCcw className="h-4 w-4" />
+                      ) : (
+                        <Check className="h-4 w-4" />
+                      )
+                    }
+                    label={item.completed ? "Mark not done" : "Complete"}
+                    onClick={toggleComplete}
+                  />
+                  <MenuItem
+                    icon={<Trash2 className="h-4 w-4" />}
+                    label="Delete"
+                    danger
+                    onClick={() =>
+                      action(async () => {
+                        await deleteItem(item.id);
+                        play("confirm");
+                      })
+                    }
+                  />
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
-    </div>
+    </>
   );
 }
 
@@ -131,7 +170,7 @@ function MenuItem({
       type="button"
       role="menuitem"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-sm transition-colors ${
+      className={`flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-2 text-sm transition-colors ${
         danger
           ? "text-error hover:bg-error/10"
           : "text-text-primary hover:bg-hover"
