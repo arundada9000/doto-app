@@ -57,6 +57,12 @@ export function useKeyboardShortcuts() {
         return;
       }
 
+      if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        e.preventDefault();
+        useAppStore.getState().openShortcuts();
+        return;
+      }
+
       switch (e.key.toLowerCase()) {
         case "t":
           navigate("/today");

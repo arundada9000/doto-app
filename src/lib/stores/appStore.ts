@@ -13,6 +13,9 @@ interface AppState {
   onboardOpen: boolean;
   openOnboard: () => void;
   closeOnboard: () => void;
+  shortcutsOpen: boolean;
+  openShortcuts: () => void;
+  closeShortcuts: () => void;
   captureType: "task" | "note" | "auto";
   setCaptureType: (t: "task" | "note" | "auto") => void;
   editingItemId: string | null;
@@ -36,6 +39,10 @@ export const useAppStore = create<AppState>((set) => ({
   onboardOpen: false,
   openOnboard: () => set({ onboardOpen: true }),
   closeOnboard: () => set({ onboardOpen: false }),
+
+  shortcutsOpen: false,
+  openShortcuts: () => set({ shortcutsOpen: true }),
+  closeShortcuts: () => set({ shortcutsOpen: false }),
 
   captureType: "auto",
   setCaptureType: (captureType) => set({ captureType }),

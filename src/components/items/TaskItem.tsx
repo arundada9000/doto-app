@@ -6,6 +6,7 @@ import { Check, Paperclip, Clock, Link2 } from "lucide-react";
 import type { Item } from "@/types";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
+import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
@@ -21,6 +22,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
+  const completion = useSettingsStore((s) => s.completion);
   const [celebrating, setCelebrating] = useState(false);
 
   const toggle = () => {
@@ -30,7 +32,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
     }
     setCelebrating(true);
     completeItem(item.id);
-    play("complete");
+    play("complete", completion);
     vibrate("success");
     setTimeout(() => setCelebrating(false), 950);
   };

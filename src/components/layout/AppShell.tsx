@@ -13,6 +13,8 @@ import { ContextMenuProvider } from "@/components/contextmenu/ContextMenuProvide
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { HelpOverlay } from "@/components/help/HelpOverlay";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
+import { InstallPrompt } from "@/components/install/InstallPrompt";
+import { ShortcutsPopover } from "@/components/shortcuts/ShortcutsPopover";
 import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 import { useServiceWorker } from "@/lib/hooks/useServiceWorker";
 import { useCaptureQuery } from "@/lib/hooks/useCaptureQuery";
@@ -47,6 +49,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <CursorProvider />
       <HelpOverlay />
       <OnboardingTour />
+      <InstallPrompt />
+      <ShortcutsPopover />
       <Toaster />
     </div>
   );
