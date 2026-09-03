@@ -1,0 +1,198 @@
+"use client";
+
+import { Check, Type, Volume2, Sunrise } from "lucide-react";
+import { useSettingsStore } from "@/lib/stores/settingsStore";
+import type { ThemeName, FontFamilyName } from "@/types";
+import { cn } from "@/lib/utils/cn";
+
+const THEMES: { name: ThemeName; label: string; swatch: string }[] = [
+  { name: "system", label: "System", swatch: "linear-gradient(135deg,#f4f5f7 50%,#101114 50%)" },
+  { name: "paper", label: "Paper", swatch: "#f6f1e8" },
+  { name: "midnight", label: "Midnight", swatch: "#0a0d14" },
+  { name: "ocean", label: "Ocean", swatch: "#eef4fb" },
+  { name: "forest", label: "Forest", swatch: "#eef3ec" },
+  { name: "lavender", label: "Lavender", swatch: "#f4f1fb" },
+  { name: "sunset", label: "Sunset", swatch: "#fbf0ea" },
+  { name: "rose", label: "Rose", swatch: "#faf1f2" },
+  { name: "graphite", label: "Graphite", swatch: "#f3f4f5" },
+  { name: "nordic", label: "Nordic", swatch: "#eef2f1" },
+  { name: "solar", label: "Solar", swatch: "#faf5eb" },
+  { name: "monochrome", label: "Monochrome", swatch: "#f4f4f4" },
+];
+
+const FONTS: { name: FontFamilyName; label: string }[] = [
+  { name: "system", label: "System" },
+  { name: "serif", label: "Serif" },
+  { name: "mono", label: "Monospace" },
+];
+
+export function SettingsView() {
+  const settings = useSettingsStore();
+  const {
+    theme, fontFamily, fontSize,
+    soundEnabled, hapticEnabled, reduceMotion,
+    setTheme, setFontFamily, setFontSize,
+    setSoundEnabled, setHapticEnabled, setReduceMotion,
+  } = settings;
+
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-6 md:px-6">
+      <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+        Settings
+      </h1>
+      <p className="pt-0.5 text-sm text-text-secondary">
+        Make DoTo feel like yours.
+      </p>
+
+      <Section icon={<Sunrise className="h-4 w-4" />} title="Appearance">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+          {THEMES.map((t) => (
+            <button
+              key={t.name}
+              type="button"
+              onClick={() => setTheme(t.name)}
+              aria-pressed={theme === t.name}
+              aria-label={`${t.label} theme`}
+              className={cn(
+                "flex flex-col items-center gap-2 rounded-[var(--radius-md)] border p-2.5 transition-colors",
+                theme === t.name
+                  ? "border-accent bg-accent-soft"
+                  : "border-border-subtle hover:border-border-strong"
+              )}
+            >
+              <span
+                className="h-10 w-10 rounded-full border border-border-subtle"
+                style={{ background: t.swatch }}
+              />
+              <span className={cn(
+                "text-xs",
+                theme === t.name ? "font-medium text-accent" : "text-text-secondary"
+              )}>
+                {t.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </Section>
+
+      <Section icon={<Type className="h-4 w-4" />} title="Font & size">
+        <div className="flex gap-2">
+          {FONTS.map((f) => (
+            <button
+              key={f.name}
+              type="button"
+              onClick={() => setFontFamily(f.name)}
+              aria-pressed={fontFamily === f.name}
+              className={cn(
+                "flex-1 rounded-[var(--radius-md)] border px-3 py-2.5 text-sm transition-colors",
+                fontFamily === f.name
+                  ? "border-accent bg-accent-soft font-medium text-accent"
+                  : "border-border-subtle text-text-secondary hover:border-border-strong"
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="text-xs text-text-tertiary">A</span>
+          <input
+            type="range"
+            min={14}
+            max={20}
+            step={1}
+            value={fontSize}
+            onChange={(e) => setFontSize(Number(e.target.value))}
+            aria-label="Text size"
+            className="flex-1 accent-accent"
+          />
+          <span className="text-lg text-text-tertiary">A</span>
+        </div>
+      </Section>
+
+      <Section icon={<Volume2 className="h-4 w-4" />} title="Feedback">
+        <ToggleRow
+          label="Sound effects"
+          description="Play subtle sounds when you complete or capture"
+          checked={soundEnabled}
+          onChange={setSoundEnabled}
+        />
+        <ToggleRow
+          label="Haptics"
+          description="Vibrate on meaningful actions where supported"
+          checked={hapticEnabled}
+          onChange={setHapticEnabled}
+        />
+        <ToggleRow
+          label="Reduce motion"
+          description="Minimize animations and transitions"
+          checked={reduceMotion}
+          onChange={setReduceMotion}
+        />
+      </Section>
+    </div>
+  );
+}
+
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mt-7">
+      <h2 className="mb-2.5 flex items-center gap-2 text-sm font-medium text-text-secondary">
+        {icon}
+        {title}
+      </h2>
+      <div className="rounded-[var(--radius-lg)] border border-border-subtle bg-surface p-4">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function ToggleRow({
+  label,
+  description,
+  checked,
+  onChange,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 py-2">
+      <div>
+        <p className="text-[0.9375rem] text-text-primary">{label}</p>
+        <p className="text-sm text-text-tertiary">{description}</p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+        className={cn(
+          "relative h-7 w-12 shrink-0 rounded-full transition-colors",
+          checked ? "bg-accent" : "bg-border-strong"
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm transition-all",
+            checked ? "left-[22px]" : "left-0.5"
+          )}
+        >
+          {checked && <Check className="h-3.5 w-3.5 text-accent" strokeWidth={3} />}
+        </span>
+      </button>
+    </div>
+  );
+}
