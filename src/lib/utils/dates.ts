@@ -84,3 +84,13 @@ export function formatTime(ts: number): string {
     minute: "2-digit",
   });
 }
+
+export function greetingFor(name?: string): string {
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 5 ? "Burning the midnight oil" :
+    hour < 12 ? "Good morning" :
+    hour < 18 ? "Good afternoon" :
+    "Good evening";
+  return name?.trim() ? `${greeting}, ${name.trim()}` : greeting;
+}

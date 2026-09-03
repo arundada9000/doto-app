@@ -13,6 +13,7 @@ import { formatRelative } from "@/lib/utils/dates";
 import { cn } from "@/lib/utils/cn";
 import { Swipeable } from "@/components/items/Swipeable";
 import { ItemMenu } from "@/components/items/ItemMenu";
+import { CompletionCelebration } from "@/components/items/CompletionCelebration";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
   const { completeItem, uncompleteItem } = useItemsStore();
@@ -31,7 +32,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
     completeItem(item.id);
     play("complete");
     vibrate("success");
-    setTimeout(() => setCelebrating(false), 700);
+    setTimeout(() => setCelebrating(false), 950);
   };
 
   const open = () => openItem(item.id);
@@ -66,7 +67,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
           onClick={open}
           onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
           className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
-        {celebrating && <Celebration />}
+        {celebrating && <CompletionCelebration />}
         <button
           type="button"
           onClick={(e) => {
@@ -164,26 +165,5 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
       </div>
       </Swipeable>
     </motion.li>
-  );
-}
-
-function Celebration() {
-  return (
-    <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--radius-md)]">
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <motion.span
-          key={i}
-          className="absolute h-1.5 w-1.5 rounded-full bg-accent"
-          initial={{ opacity: 1, x: 0, y: 20, scale: 0 }}
-          animate={{
-            opacity: 0,
-            x: Math.cos((i / 6) * Math.PI * 2) * 40,
-            y: 20 + Math.sin((i / 6) * Math.PI * 2) * 40,
-            scale: 1,
-          }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        />
-      ))}
-    </span>
   );
 }

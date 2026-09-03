@@ -17,6 +17,8 @@ interface ItemsState {
   toggleChecklistItem: (itemId: string, checklistId: string) => Promise<void>;
   addChecklistEntry: (itemId: string, text: string) => Promise<void>;
   removeChecklistEntry: (itemId: string, checklistId: string) => Promise<void>;
+  replaceAll: (items: Item[]) => Promise<void>;
+  clearAll: () => Promise<void>;
 }
 
 export const useItemsStore = create<ItemsState>((set, get) => ({
@@ -179,5 +181,16 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
         i.id === itemId ? { ...i, checklist: updatedChecklist, updatedAt: now } : i
       ),
     });
+  },
+
+  replaceAll: async (items) => {
+    await itemsTable.clear();
+    if (items.length > 0) await itemsTable.bulkPut(items);
+    set({ items });
+  },
+
+  clearAll: async () => {
+    await itemsTable.clear();
+    set({ items: [] });
   },
 }));

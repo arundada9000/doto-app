@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Inbox, Sun, CheckCircle2 } from "lucide-react";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
+import { useSettingsStore } from "@/lib/stores/settingsStore";
+import { greetingFor } from "@/lib/utils/dates";
 import { ItemList } from "@/components/items/ItemList";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { cn } from "@/lib/utils/cn";
@@ -11,9 +13,11 @@ import { cn } from "@/lib/utils/cn";
 function PageHeader({
   title,
   subtitle,
+  greeting,
 }: {
   title: string;
   subtitle: string;
+  greeting?: string;
 }) {
   return (
     <motion.header
@@ -22,6 +26,9 @@ function PageHeader({
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       className="sticky top-0 z-10 border-b border-border-subtle bg-bg py-4 backdrop-blur-md"
     >
+      {greeting && (
+        <p className="px-4 pb-1 text-sm text-accent md:px-6">{greeting}</p>
+      )}
       <h1 className="px-4 text-2xl font-semibold tracking-tight text-text-primary md:px-6">
         {title}
       </h1>
@@ -34,6 +41,7 @@ export function InboxView() {
   const items = useItemsStore((s) => s.items);
   const loading = useItemsStore((s) => s.loading);
   const openQuickCapture = useAppStore((s) => s.openQuickCapture);
+  const profileName = useSettingsStore((s) => s.profileName);
 
   const inboxItems = items
     .filter((i) => !i.completed && !i.dueAt)
@@ -52,6 +60,7 @@ export function InboxView() {
       <PageHeader
         title="Inbox"
         subtitle="Everything you capture lands here. Deal with it later."
+        greeting={greetingFor(profileName)}
       />
 
       {items.length === 0 ? (
@@ -90,6 +99,7 @@ export function TodayView() {
   const items = useItemsStore((s) => s.items);
   const loading = useItemsStore((s) => s.loading);
   const openQuickCapture = useAppStore((s) => s.openQuickCapture);
+  const profileName = useSettingsStore((s) => s.profileName);
 
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
@@ -122,7 +132,7 @@ export function TodayView() {
 
   return (
     <div className={cn("h-full")}>
-      <PageHeader title="Today" subtitle={todayLabel} />
+      <PageHeader title="Today" subtitle={todayLabel} greeting={greetingFor(profileName)} />
 
       {overdueItems.length === 0 && todaysItems.length === 0 ? (
         <EmptyState

@@ -9,14 +9,18 @@ import {
   Sunrise,
   BookOpen,
   ChevronRight,
+  Puzzle,
+  User,
 } from "lucide-react";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useAppStore } from "@/lib/stores/appStore";
+import { DataSettings } from "@/components/settings/DataSettings";
 import type {
   ThemeName,
   FontFamilyName,
   ContextMenuStyle,
   CursorStyle,
+  CompletionStyle,
 } from "@/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -63,16 +67,25 @@ const CONTEXT_MENUS: { name: ContextMenuStyle; label: string; desc: string }[] =
   { name: "glass", label: "Glass", desc: "Frosted panels" },
 ];
 
+const COMPLETIONS: { name: CompletionStyle; label: string; preview: string }[] = [
+  { name: "none", label: "None", preview: "·" },
+  { name: "confetti", label: "Confetti", preview: "🎉" },
+  { name: "strikethrough", label: "Draw", preview: "✓" },
+  { name: "burn", label: "Burn", preview: "🔥" },
+  { name: "melt", label: "Melt", preview: "🧊" },
+  { name: "check", label: "Check pop", preview: "✔" },
+];
+
 export function SettingsView() {
   const settings = useSettingsStore();
   const openHelp = useAppStore((s) => s.openHelp);
   const {
     theme, fontFamily, fontSize,
     soundEnabled, hapticEnabled, reduceMotion,
-    contextMenu, cursor,
+    contextMenu, cursor, completion, profileName,
     setTheme, setFontFamily, setFontSize,
     setSoundEnabled, setHapticEnabled, setReduceMotion,
-    setContextMenu, setCursor,
+    setContextMenu, setCursor, setCompletion, setProfileName,
   } = settings;
 
   return (
@@ -83,6 +96,23 @@ export function SettingsView() {
       <p className="pt-0.5 text-sm text-text-secondary">
         Make DoTo feel like yours.
       </p>
+
+      <Section icon={<User className="h-4 w-4" />} title="Profile">
+        <label className="mb-1.5 block text-sm text-text-secondary">
+          Your name
+        </label>
+        <input
+          type="text"
+          value={profileName}
+          onChange={(e) => setProfileName(e.target.value)}
+          placeholder="e.g. Arun"
+          maxLength={40}
+          className="w-full rounded-[var(--radius-md)] border border-border-subtle bg-surface-secondary px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring)]"
+        />
+        <p className="mt-1.5 text-xs text-text-tertiary">
+          Shown as a greeting on your capture views.
+        </p>
+      </Section>
 
       <Section icon={<Sunrise className="h-4 w-4" />} title="Appearance">
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
@@ -226,6 +256,34 @@ export function SettingsView() {
         </OptionGrid>
       </Section>
 
+      <Section icon={<Puzzle className="h-4 w-4" />} title="Completion reward">
+        <p className="mb-3 text-sm text-text-tertiary">
+          Pick a satisfying celebration to play when you finish a task.
+        </p>
+        <OptionGrid>
+          {COMPLETIONS.map((c) => (
+            <OptionButton
+              key={c.name}
+              label={c.label}
+              selected={completion === c.name}
+              onClick={() => setCompletion(c.name)}
+              preview={
+                <span
+                  className={cn(
+                    "mx-auto flex h-8 w-11 items-center justify-center rounded-[var(--radius-sm)] border text-base transition-colors",
+                    completion === c.name
+                      ? "border-accent bg-accent-soft text-accent"
+                      : "border-border-subtle bg-hover text-text-secondary"
+                  )}
+                >
+                  {c.preview}
+                </span>
+              }
+            />
+          ))}
+        </OptionGrid>
+      </Section>
+
       <Section icon={<BookOpen className="h-4 w-4" />} title="Help">
         <p className="mb-3 text-sm text-text-tertiary">
           Learn the ropes with a quick guided tour of every feature.
@@ -242,6 +300,8 @@ export function SettingsView() {
           <ChevronRight className="h-4 w-4 text-text-tertiary" />
         </button>
       </Section>
+
+      <DataSettings />
     </div>
   );
 }

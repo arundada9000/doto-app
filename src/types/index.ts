@@ -85,6 +85,14 @@ export type CursorStyle =
   | "diamond"
   | "crosshair";
 
+export type CompletionStyle =
+  | "none"
+  | "confetti"
+  | "strikethrough"
+  | "burn"
+  | "melt"
+  | "check";
+
 export interface Settings {
   theme: ThemeName;
   fontFamily: FontFamilyName;
@@ -96,4 +104,6 @@ export interface Settings {
   autoTimezone: boolean;
   contextMenu: ContextMenuStyle;
   cursor: CursorStyle;
+  completion: CompletionStyle;
+  profileName: string;
 }

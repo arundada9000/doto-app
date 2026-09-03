@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Search } from "lucide-react";
 import { Sidebar } from "@/components/navigation/Sidebar";
 import { BottomNav } from "@/components/navigation/BottomNav";
@@ -17,9 +18,11 @@ import { useCaptureQuery } from "@/lib/hooks/useCaptureQuery";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const openSearch = useAppStore((s) => s.openSearch);
+  const openHelp = useAppStore((s) => s.openHelp);
   useKeyboardShortcuts();
   useServiceWorker();
   useCaptureQuery();
+  useFirstVisit(openHelp);
 
   return (
     <div className="flex h-full">
@@ -45,4 +48,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Toaster />
     </div>
   );
+}
+
+function useFirstVisit(openHelp: () => void) {
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("doto-help-seen")) return;
+      const id = setTimeout(() => {
+        openHelp();
+        localStorage.setItem("doto-help-seen", "1");
+      }, 700);
+      return () => clearTimeout(id);
+    } catch {
+      // storage unavailable; just skip auto-onboarding
+    }
+  }, [openHelp]);
 }

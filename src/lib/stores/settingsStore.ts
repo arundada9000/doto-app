@@ -4,6 +4,7 @@ import type {
   FontFamilyName,
   ContextMenuStyle,
   CursorStyle,
+  CompletionStyle,
   Settings,
 } from "@/types";
 import { settingsTable } from "@/lib/db";
@@ -19,6 +20,8 @@ const DEFAULT_SETTINGS: Settings = {
   autoTimezone: true,
   contextMenu: "native",
   cursor: "native",
+  completion: "confetti",
+  profileName: "",
 };
 
 interface SettingsState extends Settings {
@@ -33,6 +36,8 @@ interface SettingsState extends Settings {
   setReduceMotion: (reduce: boolean) => void;
   setContextMenu: (style: ContextMenuStyle) => void;
   setCursor: (cursor: CursorStyle) => void;
+  setCompletion: (completion: CompletionStyle) => void;
+  setProfileName: (name: string) => void;
 }
 
 async function persist(state: SettingsState) {
@@ -47,6 +52,8 @@ async function persist(state: SettingsState) {
     autoTimezone: state.autoTimezone,
     contextMenu: state.contextMenu,
     cursor: state.cursor,
+    completion: state.completion,
+    profileName: state.profileName,
   };
   await settingsTable.put({ key: "settings", value: settings });
 }
@@ -110,6 +117,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setCursor: (cursor) => {
     set({ cursor });
+    persist(get());
+  },
+
+  setCompletion: (completion) => {
+    set({ completion });
+    persist(get());
+  },
+
+  setProfileName: (profileName) => {
+    set({ profileName });
     persist(get());
   },
 }));
