@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/navigation/BottomNav";
 import { QuickCapture } from "@/components/capture/QuickCapture";
 import { Toaster } from "@/components/ui/Toaster";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
+import { ItemEditor } from "@/components/items/ItemEditor";
 import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 import { useServiceWorker } from "@/lib/hooks/useServiceWorker";
 import { useCaptureQuery } from "@/lib/hooks/useCaptureQuery";
@@ -23,6 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <BottomNav />
       <QuickCapture />
       <SearchOverlay />
+      <ItemEditor />
       <Toaster />
     </div>
   );

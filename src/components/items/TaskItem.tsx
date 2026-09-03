@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Paperclip, Clock } from "lucide-react";
 import type { Item } from "@/types";
 import { useItemsStore } from "@/lib/stores/itemsStore";
+import { useAppStore } from "@/lib/stores/appStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { formatRelative } from "@/lib/utils/dates";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils/cn";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
   const { completeItem, uncompleteItem } = useItemsStore();
+  const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
   const [celebrating, setCelebrating] = useState(false);
@@ -28,6 +30,8 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
     setTimeout(() => setCelebrating(false), 700);
   };
 
+  const open = () => openItem(item.id);
+
   const checklistCount = item.checklist?.length ?? 0;
   const checklistDone = item.checklist?.filter((c) => c.completed).length ?? 0;
   const isOverdue =
@@ -43,11 +47,19 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
       className="group"
       style={{ zIndex: index }}
     >
-      <div className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
+        className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
         {celebrating && <Celebration />}
         <button
           type="button"
-          onClick={toggle}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggle();
+          }}
           aria-label={item.completed ? "Mark as not done" : "Mark as done"}
           aria-pressed={item.completed}
           className="relative mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-border-strong transition-colors focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"

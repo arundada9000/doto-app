@@ -3,9 +3,13 @@
 import { motion } from "framer-motion";
 import { Paperclip } from "lucide-react";
 import type { Item } from "@/types";
+import { useAppStore } from "@/lib/stores/appStore";
 import { formatRelative } from "@/lib/utils/dates";
 
 export function NoteItem({ item }: { item: Item }) {
+  const openItem = useAppStore((s) => s.openItem);
+  const open = () => openItem(item.id);
+
   return (
     <motion.li
       layout
@@ -14,7 +18,13 @@ export function NoteItem({ item }: { item: Item }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="group rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={open}
+        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
+        className="group rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+      >
         <p className="whitespace-pre-wrap break-words text-[0.9375rem] leading-relaxed text-text-primary">
           {item.title}
         </p>

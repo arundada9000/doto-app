@@ -9,6 +9,9 @@ interface AppState {
   closeSearch: () => void;
   captureType: "task" | "note" | "auto";
   setCaptureType: (t: "task" | "note" | "auto") => void;
+  editingItemId: string | null;
+  openItem: (id: string) => void;
+  closeItem: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -22,4 +25,8 @@ export const useAppStore = create<AppState>((set) => ({
 
   captureType: "auto",
   setCaptureType: (captureType) => set({ captureType }),
+
+  editingItemId: null,
+  openItem: (editingItemId) => set({ editingItemId }),
+  closeItem: () => set({ editingItemId: null }),
 }));
