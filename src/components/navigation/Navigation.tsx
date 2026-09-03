@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { Inbox, Sun, CheckCircle2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -70,13 +71,23 @@ export function NavLinks({
               onNavigate?.();
             }}
             className={cn(
-              "w-full justify-start gap-3 px-3 text-[0.9375rem]",
+              "relative isolate w-full justify-start gap-3 px-3 text-[0.9375rem]",
               isActive
-                ? "bg-accent-soft text-accent"
+                ? "text-accent"
                 : "text-text-secondary hover:text-text-primary"
             )}
             aria-current={isActive ? "page" : undefined}
           >
+            {/* Shares its layoutId with nothing else, so the highlight slides
+                between links instead of each one fading independently. */}
+            {isActive && (
+              <motion.span
+                layoutId="sidebar-nav-active"
+                aria-hidden
+                className="absolute inset-0 -z-10 rounded-[var(--radius-md)] bg-accent-soft"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
             {item.icon}
             <span className="flex-1 text-left">{item.label}</span>
             <kbd className="hidden rounded-[var(--radius-sm)] border border-border-subtle px-1.5 py-0.5 text-xs font-normal text-text-tertiary md:inline-block">

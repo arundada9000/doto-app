@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useAppStore } from "@/lib/stores/appStore";
+import { cn } from "@/lib/utils/cn";
 import { useItemsStore } from "@/lib/stores/itemsStore";
 import type { Item } from "@/types";
 export function SearchOverlay() {
@@ -20,7 +21,10 @@ export function SearchOverlay() {
 function SearchDialog({ onClose }: { onClose: () => void }) {
   const items = useItemsStore((s) => s.items);
   const [query, setQuery] = useState("");
+  const [highlight, setHighlight] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const openItem = useAppStore((s) => s.openItem);
 
   useEffect(() => {
     const id = setTimeout(() => inputRef.current?.focus(), 60);
@@ -55,6 +59,33 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
       .slice(0, 30);
   }, [items, query]);
 
+  // Clamped rather than reset, so narrowing the query keeps a sensible row
+  // selected instead of jumping back to the top on every keystroke.
+  const active = results.length > 0 ? Math.min(highlight, results.length - 1) : 0;
+
+  const openResult = (item: Item) => {
+    onClose();
+    openItem(item.id);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (results.length === 0) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const delta = e.key === "ArrowDown" ? 1 : -1;
+      const next = (active + delta + results.length) % results.length;
+      setHighlight(next);
+      listRef.current
+        ?.querySelectorAll("li")
+        [next]?.scrollIntoView({ block: "nearest" });
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      openResult(results[active]);
+    }
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-50 bg-overlay px-4 pt-[10vh]"
@@ -80,7 +111,11 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
           <input
             ref={inputRef}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setHighlight(0);
+            }}
+            onKeyDown={onKeyDown}
             placeholder="Search tasks, notes, tags..."
             aria-label="Search"
             className="w-full bg-transparent text-base text-text-primary placeholder:text-text-tertiary focus:outline-none"
@@ -106,9 +141,14 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
               No results for &quot;{query}&quot;
             </p>
           ) : (
-            <ul className="flex flex-col">
-              {results.map((item) => (
-                <SearchResult key={item.id} item={item} onClose={onClose} />
+            <ul ref={listRef} className="flex flex-col">
+              {results.map((item, i) => (
+                <SearchResult
+                  key={item.id}
+                  item={item}
+                  active={i === active}
+                  onOpen={() => openResult(item)}
+                />
               ))}
             </ul>
           )}
@@ -118,17 +158,24 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
-function SearchResult({ item, onClose }: { item: Item; onClose: () => void }) {
-  const openItem = useAppStore((s) => s.openItem);
+function SearchResult({
+  item,
+  active,
+  onOpen,
+}: {
+  item: Item;
+  active: boolean;
+  onOpen: () => void;
+}) {
   return (
     <li>
       <button
         type="button"
-        onClick={() => {
-          onClose();
-          openItem(item.id);
-        }}
-        className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-left hover:bg-hover"
+        onClick={onOpen}
+        className={cn(
+          "flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-left transition-colors",
+          active ? "bg-accent-soft" : "hover:bg-hover"
+        )}
       >
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm text-text-primary">
