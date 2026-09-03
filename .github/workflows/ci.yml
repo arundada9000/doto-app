@@ -35,3 +35,8 @@ jobs:
       # Type errors surface here: next build type checks, and eslint does not.
       - name: Build
         run: npm run build
+
+      # Broken internal links and missing images only appear once the static
+      # export is assembled, which no earlier step would catch.
+      - name: Check the export
+        run: node scripts/check-export.mjs
