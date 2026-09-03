@@ -92,14 +92,20 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
 
     // A repeating task returns as a fresh occurrence rather than advancing in
     // place, so the one just finished stays in Completed as a real record.
-    if (!item?.recurrence || item.dueAt === undefined) return null;
+    if (!item?.recurrence) return null;
 
-    const nextDue = nextOccurrence(item.recurrence, item.dueAt, now);
+    // Recurrence can be set without a due date. Measuring from the completion
+    // instead means "repeat daily" still works, rather than silently doing
+    // nothing the way it would if this required a due date.
+    const base = item.dueAt ?? now;
+    const nextDue = nextOccurrence(item.recurrence, base, now);
     if (nextDue === null) return null;
 
     // Carry the reminder forward by the same distance it sat from the due date.
     const reminderOffset =
-      item.reminder !== undefined ? item.reminder - item.dueAt : undefined;
+      item.reminder !== undefined && item.dueAt !== undefined
+        ? item.reminder - item.dueAt
+        : undefined;
 
     const spawned = await get().addItem({
       type: item.type,
