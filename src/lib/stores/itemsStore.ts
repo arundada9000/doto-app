@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { nanoid } from "nanoid";
 import { itemsTable } from "@/lib/db";
 import type { Item, NewItem, ChecklistEntry } from "@/types";
+import { nextOccurrence } from "@/lib/utils/recurrence";
 
 interface ItemsState {
   items: Item[];
@@ -80,11 +81,40 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
 
   completeItem: async (id) => {
     const now = Date.now();
+    const item = get().items.find((i) => i.id === id);
+
     await itemsTable.update(id, { completed: true, completedAt: now, updatedAt: now });
     set({
       items: get().items.map((i) =>
         i.id === id ? { ...i, completed: true, completedAt: now, updatedAt: now } : i
       ),
+    });
+
+    // A repeating task returns as a fresh occurrence rather than advancing in
+    // place, so the one just finished stays in Completed as a real record.
+    if (!item?.recurrence || item.dueAt === undefined) return;
+
+    const nextDue = nextOccurrence(item.recurrence, item.dueAt, now);
+    if (nextDue === null) return;
+
+    // Carry the reminder forward by the same distance it sat from the due date.
+    const reminderOffset =
+      item.reminder !== undefined ? item.reminder - item.dueAt : undefined;
+
+    await get().addItem({
+      type: item.type,
+      title: item.title,
+      content: item.content,
+      // Attachments are Blobs and are deliberately not duplicated; the finished
+      // occurrence keeps them.
+      checklist: item.checklist?.map((entry) => ({ ...entry, completed: false })),
+      dueAt: nextDue,
+      reminder:
+        reminderOffset !== undefined ? nextDue + reminderOffset : undefined,
+      recurrence: item.recurrence,
+      tags: [...item.tags],
+      attachments: [],
+      links: [...item.links],
     });
   },
 

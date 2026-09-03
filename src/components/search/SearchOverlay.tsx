@@ -36,7 +36,21 @@ function SearchDialog({ onClose }: { onClose: () => void }) {
         const content = item.content?.toLowerCase() ?? "";
         const tags = item.tags.some((tag) => tag.toLowerCase().includes(q));
         const links = item.links.some((link) => link.toLowerCase().includes(q));
-        return title.includes(q) || content.includes(q) || tags || links;
+        const checklist =
+          item.checklist?.some((entry) =>
+            entry.text.toLowerCase().includes(q)
+          ) ?? false;
+        const attachments = item.attachments.some((file) =>
+          file.name.toLowerCase().includes(q)
+        );
+        return (
+          title.includes(q) ||
+          content.includes(q) ||
+          tags ||
+          links ||
+          checklist ||
+          attachments
+        );
       })
       .slice(0, 30);
   }, [items, query]);
