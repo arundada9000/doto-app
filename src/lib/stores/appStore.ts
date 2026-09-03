@@ -10,6 +10,9 @@ interface AppState {
   helpOpen: boolean;
   openHelp: () => void;
   closeHelp: () => void;
+  onboardOpen: boolean;
+  openOnboard: () => void;
+  closeOnboard: () => void;
   captureType: "task" | "note" | "auto";
   setCaptureType: (t: "task" | "note" | "auto") => void;
   editingItemId: string | null;
@@ -29,6 +32,10 @@ export const useAppStore = create<AppState>((set) => ({
   helpOpen: false,
   openHelp: () => set({ helpOpen: true }),
   closeHelp: () => set({ helpOpen: false }),
+
+  onboardOpen: false,
+  openOnboard: () => set({ onboardOpen: true }),
+  closeOnboard: () => set({ onboardOpen: false }),
 
   captureType: "auto",
   setCaptureType: (captureType) => set({ captureType }),

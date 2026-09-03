@@ -8,6 +8,7 @@ import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { greetingFor } from "@/lib/utils/dates";
 import { ItemList } from "@/components/items/ItemList";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { cn } from "@/lib/utils/cn";
 
 function PageHeader({
@@ -126,6 +127,18 @@ export function TodayView() {
     day: "numeric",
   });
 
+  const startOfTodayMs = startOfToday.getTime();
+  const doneToday = items.filter(
+    (i) =>
+      i.completed &&
+      i.completedAt &&
+      i.completedAt >= startOfTodayMs &&
+      i.completedAt < endOfToday.getTime()
+  ).length;
+  const plannedToday = todaysItems.length;
+  const totalToday = doneToday + plannedToday;
+  const progress = totalToday > 0 ? doneToday / totalToday : 0;
+
   if (loading) {
     return <Skeleton />;
   }
@@ -133,6 +146,12 @@ export function TodayView() {
   return (
     <div className={cn("h-full")}>
       <PageHeader title="Today" subtitle={todayLabel} greeting={greetingFor(profileName)} />
+
+      <TodaySummary
+        doneToday={doneToday}
+        plannedToday={plannedToday}
+        progress={progress}
+      />
 
       {overdueItems.length === 0 && todaysItems.length === 0 ? (
         <EmptyState
@@ -201,6 +220,47 @@ export function CompletedView() {
         </div>
       )}
     </div>
+  );
+}
+
+function TodaySummary({
+  doneToday,
+  plannedToday,
+  progress,
+}: {
+  doneToday: number;
+  plannedToday: number;
+  progress: number;
+}) {
+  if (doneToday === 0 && plannedToday === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-center gap-4 border-b border-border-subtle px-4 py-3 md:px-6"
+    >
+      <ProgressRing value={progress} size={56} stroke={5} />
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-text-primary">
+          {doneToday > 0 ? (
+            <>
+              Finished <span className="text-secondary-color">{doneToday}</span>{" "}
+              {doneToday === 1 ? "task" : "tasks"} today
+            </>
+          ) : (
+            "Nothing wrapped up yet — go get one."
+          )}
+        </p>
+        {plannedToday > 0 && (
+          <p className="mt-0.5 text-xs text-text-tertiary">
+            {plannedToday} {plannedToday === 1 ? "task" : "tasks"} still on today&apos;s
+            plate.
+          </p>
+        )}
+      </div>
+    </motion.div>
   );
 }
 

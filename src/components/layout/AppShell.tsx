@@ -12,17 +12,18 @@ import { ItemEditor } from "@/components/items/ItemEditor";
 import { ContextMenuProvider } from "@/components/contextmenu/ContextMenuProvider";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { HelpOverlay } from "@/components/help/HelpOverlay";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 import { useServiceWorker } from "@/lib/hooks/useServiceWorker";
 import { useCaptureQuery } from "@/lib/hooks/useCaptureQuery";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const openSearch = useAppStore((s) => s.openSearch);
-  const openHelp = useAppStore((s) => s.openHelp);
+  const openOnboard = useAppStore((s) => s.openOnboard);
   useKeyboardShortcuts();
   useServiceWorker();
   useCaptureQuery();
-  useFirstVisit(openHelp);
+  useFirstVisit(openOnboard);
 
   return (
     <div className="flex h-full">
@@ -45,6 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <ContextMenuProvider />
       <CursorProvider />
       <HelpOverlay />
+      <OnboardingTour />
       <Toaster />
     </div>
   );

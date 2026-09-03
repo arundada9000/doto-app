@@ -23,9 +23,19 @@ export function EmptyState({
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       className="flex flex-col items-center justify-center px-6 py-16 text-center"
     >
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-hover text-text-tertiary">
-        {icon}
-      </div>
+      <motion.div
+        className="relative mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-hover text-text-tertiary"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 240, damping: 15 }}
+      >
+        <motion.div
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {icon}
+        </motion.div>
+      </motion.div>
       <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
       {message && (
         <p className="mt-1.5 max-w-sm text-sm text-text-secondary">{message}</p>
