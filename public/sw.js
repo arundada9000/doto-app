@@ -1,13 +1,18 @@
-const CACHE_NAME = "doto-shell-v1";
+const CACHE_NAME = "doto-shell-v2";
 
 const CORE_ASSETS = [
   "/",
+  "/blog/",
   "/manifest.webmanifest",
   "/inbox/",
   "/today/",
   "/completed/",
   "/settings/",
 ];
+
+// "/" is the landing page, so an app route falling back to it would show
+// marketing copy to someone who opened their inbox offline.
+const APP_ROUTE = /^\/(inbox|today|completed|settings)(\/|$)/;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -48,7 +53,12 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match("/"))
+        .catch(async () => {
+          // Prefer the page actually asked for, then the right shell for it.
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          return caches.match(APP_ROUTE.test(url.pathname) ? "/inbox/" : "/");
+        })
     );
     return;
   }

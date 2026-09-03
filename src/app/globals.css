@@ -789,3 +789,95 @@ button:not(:disabled):active {
     scroll-behavior: auto !important;
   }
 }
+
+/* ------------------------------------------------------------
+   Marketing surfaces (landing page and articles)
+
+   Motion here is CSS only. These pages carry no client JavaScript, which is
+   the point: they are the pages that need to be fast and indexable. Entrance
+   animations run once on load; the rest are scroll driven through
+   animation-timeline, guarded by @supports so browsers without it simply show
+   the content. Everything is inside a reduced-motion query.
+   ------------------------------------------------------------ */
+@keyframes doto-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes doto-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes doto-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: doto-rise 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .rise-1 {
+    animation-delay: 70ms;
+  }
+  .rise-2 {
+    animation-delay: 140ms;
+  }
+  .rise-3 {
+    animation-delay: 210ms;
+  }
+  .rise-4 {
+    animation-delay: 300ms;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: doto-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    .drift {
+      animation: doto-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+/* A quiet grid behind the hero. Masked so it fades out rather than ending on
+   a hard line, and built from gradients so it costs no image request. */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 0%,
+    #000 30%,
+    transparent 75%
+  );
+}
+
+/* Reading measure for article prose. */
+.prose-measure {
+  max-width: 68ch;
+}

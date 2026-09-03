@@ -9,6 +9,13 @@ reaches a first release.
 
 ### Added
 
+- A statically rendered landing page and six articles under `/blog`, with
+  `SoftwareApplication`, `FAQPage`, `BlogPosting`, `BreadcrumbList`, `Person`,
+  and `WebSite` structured data generated from the page content
+- OpenGraph and Twitter cards, a build-time social image, canonical URLs,
+  `robots.txt`, and a sitemap
+- Install screenshots in the manifest for both form factors
+- Scroll-driven CSS animation on the public pages, with no client JavaScript
 - Reminders are delivered while the app is open, as a system notification where
   permission allows and always as an in-app toast with sound and haptic
 - Recurring tasks create their next occurrence when completed
@@ -31,8 +38,19 @@ reaches a first release.
 - `prefers-reduced-transparency` support
 - Vitest, covering the parser, recurrence, and date logic
 
+### Changed
+
+- Licence moved from MIT to a non-commercial licence: free to use, study,
+  modify, and share, with selling reserved to the author
+
 ### Fixed
 
+- Every app icon had opaque black corners, and the maskable icon was a byte
+  copy of the standard one, so it had no safe zone for launcher masking
+- Manifest shortcuts omitted the trailing slash the export serves, so all four
+  resolved to a redirect or a 404
+- The offline navigation fallback served the marketing page to anyone opening
+  the app without a connection
 - Completion effects never played: they were owned by the item row, which
   unmounts the moment the item leaves the list, and were clipped by it
 - `Escape` closed no modal, because the typing guard ran before it and every

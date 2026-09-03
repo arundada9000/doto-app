@@ -17,8 +17,18 @@ export const siteTagline =
 export const siteDescription =
   "DoTo is a free, offline-first task and note app that opens straight into a capture box. Type a thought, press enter, and get on with your day. No account, no sync, no tracking: everything stays on your device.";
 
+/**
+ * Absolute URL for a path, matching the trailing slash the export actually
+ * serves. next.config sets trailingSlash, so a canonical of "/blog/x/" beside a
+ * sitemap entry of "/blog/x" would make every sitemap URL a redirect. Paths
+ * with a file extension are left alone.
+ */
 export function absoluteUrl(path = "/"): string {
-  return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
+  const withLeading = path.startsWith("/") ? path : `/${path}`;
+  const isFile = /\.[a-z0-9]+$/i.test(withLeading);
+  const normalised =
+    isFile || withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
+  return `${siteUrl}${normalised}`;
 }
 
 /**
