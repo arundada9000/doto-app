@@ -31,7 +31,7 @@ export default function BlogIndex() {
       <main className="mx-auto w-full max-w-6xl px-5 py-16 md:px-8 md:py-24">
         <BlogListSchema />
 
-        <header className="max-w-3xl">
+        <header className="mx-auto max-w-3xl text-center">
           <p className="rise text-sm font-medium uppercase tracking-wider text-accent">
             Writing
           </p>
@@ -43,12 +43,12 @@ export default function BlogIndex() {
           </p>
         </header>
 
-        <ul className="mt-14 flex flex-col gap-4">
+        <ul className="mx-auto mt-16 flex max-w-3xl flex-col gap-5">
           {posts.map((post) => (
             <li key={post.slug} className="reveal">
               <Link
                 href={`/blog/${post.slug}`}
-                className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border-subtle bg-surface p-6 transition-colors hover:border-border-strong md:p-8"
+                className="group flex flex-col gap-3 rounded-[var(--radius-xl)] bg-surface p-6 shadow-sm transition-shadow hover:shadow-md md:p-8"
               >
                 <div className="flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
                   <time dateTime={post.published}>

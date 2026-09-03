@@ -140,15 +140,18 @@ export default async function ArticlePage({
               <h2 className="text-xl font-semibold tracking-tight text-text-primary md:text-2xl">
                 Questions
               </h2>
-              <dl className="mt-5 divide-y divide-border-subtle border-y border-border-subtle">
-                {post.faq.map((entry) => (
-                  <div key={entry.question} className="py-5">
-                    <dt className="font-medium text-text-primary">
-                      {entry.question}
-                    </dt>
-                    <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-text-secondary">
-                      {entry.answer}
-                    </dd>
+              <dl className="mt-6 overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-sm">
+                {post.faq.map((entry, i) => (
+                  <div key={entry.question}>
+                    {i > 0 && <div className="ml-6 h-px bg-border-subtle" />}
+                    <div className="px-6 py-5">
+                      <dt className="font-medium text-text-primary">
+                        {entry.question}
+                      </dt>
+                      <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-text-secondary">
+                        {entry.answer}
+                      </dd>
+                    </div>
                   </div>
                 ))}
               </dl>
@@ -156,7 +159,7 @@ export default async function ArticlePage({
           )}
         </article>
 
-        <aside className="reveal mt-16 rounded-[var(--radius-lg)] border border-border-subtle bg-surface p-6 md:p-8">
+        <aside className="reveal mt-16 rounded-[var(--radius-xl)] bg-surface p-7 shadow-md md:p-9">
           <h2 className="text-lg font-semibold tracking-tight text-text-primary">
             Try it while the idea is fresh
           </h2>
@@ -166,7 +169,7 @@ export default async function ArticlePage({
           </p>
           <Link
             href="/inbox"
-            className="mt-5 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-accent px-5 py-2.5 text-[0.9375rem] font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-[0.9375rem] font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
           >
             Open DoTo
             <ArrowRight className="h-4 w-4" aria-hidden />

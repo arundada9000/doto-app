@@ -862,18 +862,14 @@ button:not(:disabled):active {
   }
 }
 
-/* A quiet grid behind the hero. Masked so it fades out rather than ending on
-   a hard line, and built from gradients so it costs no image request. */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 0%,
-    #000 30%,
-    transparent 75%
+/* A soft wash of accent behind the hero. Replaces an earlier grid pattern:
+   ornament for its own sake reads as noise, and the page should defer to its
+   content. Built from a gradient so it costs no image request. */
+.ambient {
+  background-image: radial-gradient(
+    ellipse 70% 55% at 50% -10%,
+    var(--accent-soft) 0%,
+    transparent 70%
   );
 }
 

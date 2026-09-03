@@ -7,7 +7,10 @@ import { author, siteName } from "@/lib/site";
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b border-border-subtle bg-bg/85 backdrop-blur-md">
+    <header
+      data-translucent="bg"
+      className="sticky top-0 z-20 border-b border-border-subtle/60 bg-bg/80 backdrop-blur-xl"
+    >
       <div className="mx-auto flex w-full max-w-6xl items-center gap-6 px-5 py-3.5 md:px-8">
         <Link
           href="/"
@@ -26,7 +29,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/inbox"
-            className="rounded-[var(--radius-md)] bg-accent px-3.5 py-1.5 font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
+            className="rounded-full bg-accent px-4 py-1.5 font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
           >
             Open app
           </Link>
