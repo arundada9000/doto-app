@@ -10,7 +10,7 @@ interface ItemsState {
   hydrate: () => Promise<void>;
   addItem: (newItem: NewItem) => Promise<Item>;
   updateItem: (id: string, updates: Partial<Omit<Item, "id" | "createdAt">>) => Promise<void>;
-  completeItem: (id: string) => Promise<void>;
+  completeItem: (id: string) => Promise<string | null>;
   uncompleteItem: (id: string) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   restoreItem: (item: Item) => Promise<void>;
@@ -92,16 +92,16 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
 
     // A repeating task returns as a fresh occurrence rather than advancing in
     // place, so the one just finished stays in Completed as a real record.
-    if (!item?.recurrence || item.dueAt === undefined) return;
+    if (!item?.recurrence || item.dueAt === undefined) return null;
 
     const nextDue = nextOccurrence(item.recurrence, item.dueAt, now);
-    if (nextDue === null) return;
+    if (nextDue === null) return null;
 
     // Carry the reminder forward by the same distance it sat from the due date.
     const reminderOffset =
       item.reminder !== undefined ? item.reminder - item.dueAt : undefined;
 
-    await get().addItem({
+    const spawned = await get().addItem({
       type: item.type,
       title: item.title,
       content: item.content,
@@ -116,6 +116,8 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
       attachments: [],
       links: [...item.links],
     });
+
+    return spawned.id;
   },
 
   uncompleteItem: async (id) => {

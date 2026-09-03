@@ -58,6 +58,7 @@ The user should never be forced to organize something before capturing it. Captu
 | `J` / `K` or arrows | Move between items |
 | `Space` | Complete the focused item |
 | `Enter` | Open the focused item |
+| `Ctrl/Cmd + Z` | Undo the last completion or deletion |
 | `?` | Keyboard shortcuts |
 | `Esc` | Close the topmost layer |
 

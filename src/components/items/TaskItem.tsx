@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils/cn";
 import { Swipeable } from "@/components/items/Swipeable";
 import { ItemMenu } from "@/components/items/ItemMenu";
 import { useCelebrationStore } from "@/lib/stores/celebrationStore";
+import { useUndoStore } from "@/lib/stores/undoStore";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
   const checklistCount = item.checklist?.length ?? 0;
@@ -46,7 +47,8 @@ export function TaskRow({
   item: Item;
   handle?: React.ReactNode;
 }) {
-  const { completeItem, uncompleteItem } = useItemsStore();
+  const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
+  const pushUndo = useUndoStore((s) => s.push);
   const { remove } = useDeleteWithUndo();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
@@ -80,7 +82,15 @@ export function TaskRow({
         height: rect.height,
       });
     }
-    completeItem(item.id);
+    void (async () => {
+      const spawnedId = await completeItem(item.id);
+      // Undo has to remove the occurrence a repeating task spawned as well,
+      // otherwise reopening the original leaves a duplicate behind.
+      pushUndo("Completion undone", async () => {
+        await uncompleteItem(item.id);
+        if (spawnedId) await deleteItem(spawnedId);
+      });
+    })();
     play("complete", completion);
     vibrate("success");
   };

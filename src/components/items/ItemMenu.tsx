@@ -9,6 +9,7 @@ import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useCelebrationStore } from "@/lib/stores/celebrationStore";
+import { useUndoStore } from "@/lib/stores/undoStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { useDeleteWithUndo } from "@/lib/hooks/useDeleteWithUndo";
@@ -17,7 +18,8 @@ export function ItemMenu({ item }: { item: Item }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const { completeItem, uncompleteItem } = useItemsStore();
+  const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
+  const pushUndo = useUndoStore((s) => s.push);
   const { remove } = useDeleteWithUndo();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
@@ -85,7 +87,13 @@ export function ItemMenu({ item }: { item: Item }) {
         });
       }
       action(() => {
-        completeItem(item.id);
+        void (async () => {
+          const spawnedId = await completeItem(item.id);
+          pushUndo("Completion undone", async () => {
+            await uncompleteItem(item.id);
+            if (spawnedId) await deleteItem(spawnedId);
+          });
+        })();
         play("complete", completion);
         vibrate("success");
       });

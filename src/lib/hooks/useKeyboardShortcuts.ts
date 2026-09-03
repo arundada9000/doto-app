@@ -4,6 +4,8 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppStore } from "@/lib/stores/appStore";
+import { useUndoStore } from "@/lib/stores/undoStore";
+import { useToastStore } from "@/lib/stores/toastStore";
 
 export function useKeyboardShortcuts() {
   const router = useRouter();
@@ -46,6 +48,18 @@ export function useKeyboardShortcuts() {
       }
 
       if (isTyping) return;
+
+      // Placed after the typing guard so a text field keeps the browser own
+      // undo, which is what someone editing a title expects.
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        const entry = useUndoStore.getState().pop();
+        if (entry) {
+          void entry.run();
+          useToastStore.getState().toast(entry.label, "default", 2500);
+        }
+        return;
+      }
 
       if (e.key === "n") {
         e.preventDefault();
