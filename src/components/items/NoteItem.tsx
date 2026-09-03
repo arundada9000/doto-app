@@ -21,6 +21,7 @@ export function NoteItem({ item }: { item: Item }) {
   return (
     <motion.li
       layout
+      data-item-id={item.id}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}

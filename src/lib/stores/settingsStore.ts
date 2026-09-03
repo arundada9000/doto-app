@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import type { ThemeName, FontFamilyName, Settings } from "@/types";
+import type {
+  ThemeName,
+  FontFamilyName,
+  ContextMenuStyle,
+  CursorStyle,
+  Settings,
+} from "@/types";
 import { settingsTable } from "@/lib/db";
 
 const DEFAULT_SETTINGS: Settings = {
@@ -11,6 +17,8 @@ const DEFAULT_SETTINGS: Settings = {
   hapticEnabled: true,
   reduceMotion: false,
   autoTimezone: true,
+  contextMenu: "native",
+  cursor: "native",
 };
 
 interface SettingsState extends Settings {
@@ -23,6 +31,8 @@ interface SettingsState extends Settings {
   setSoundVolume: (volume: number) => void;
   setHapticEnabled: (enabled: boolean) => void;
   setReduceMotion: (reduce: boolean) => void;
+  setContextMenu: (style: ContextMenuStyle) => void;
+  setCursor: (cursor: CursorStyle) => void;
 }
 
 async function persist(state: SettingsState) {
@@ -35,6 +45,8 @@ async function persist(state: SettingsState) {
     hapticEnabled: state.hapticEnabled,
     reduceMotion: state.reduceMotion,
     autoTimezone: state.autoTimezone,
+    contextMenu: state.contextMenu,
+    cursor: state.cursor,
   };
   await settingsTable.put({ key: "settings", value: settings });
 }
@@ -88,6 +100,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setReduceMotion: (reduceMotion) => {
     set({ reduceMotion });
+    persist(get());
+  },
+
+  setContextMenu: (contextMenu) => {
+    set({ contextMenu });
+    persist(get());
+  },
+
+  setCursor: (cursor) => {
+    set({ cursor });
     persist(get());
   },
 }));

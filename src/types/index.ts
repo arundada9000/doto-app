@@ -66,6 +66,16 @@ export type ThemeName =
 
 export type FontFamilyName = "system" | "serif" | "mono";
 
+export type ContextMenuStyle = "native" | "minimal" | "rounded" | "glass";
+
+export type CursorStyle =
+  | "native"
+  | "pointer"
+  | "ring"
+  | "dot"
+  | "diamond"
+  | "crosshair";
+
 export interface Settings {
   theme: ThemeName;
   fontFamily: FontFamilyName;
@@ -75,4 +85,6 @@ export interface Settings {
   hapticEnabled: boolean;
   reduceMotion: boolean;
   autoTimezone: boolean;
+  contextMenu: ContextMenuStyle;
+  cursor: CursorStyle;
 }

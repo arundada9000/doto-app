@@ -1,8 +1,13 @@
 "use client";
 
-import { Check, Type, Volume2, Sunrise } from "lucide-react";
+import { MousePointer2, Layers, Check, Type, Volume2, Sunrise } from "lucide-react";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
-import type { ThemeName, FontFamilyName } from "@/types";
+import type {
+  ThemeName,
+  FontFamilyName,
+  ContextMenuStyle,
+  CursorStyle,
+} from "@/types";
 import { cn } from "@/lib/utils/cn";
 
 const THEMES: { name: ThemeName; label: string; swatch: string }[] = [
@@ -26,13 +31,31 @@ const FONTS: { name: FontFamilyName; label: string }[] = [
   { name: "mono", label: "Monospace" },
 ];
 
+const CURSORS: { name: CursorStyle; label: string; shape: string }[] = [
+  { name: "native", label: "Native", shape: "▸" },
+  { name: "pointer", label: "Pointer", shape: "●" },
+  { name: "ring", label: "Ring", shape: "◎" },
+  { name: "dot", label: "Dot", shape: "○" },
+  { name: "diamond", label: "Diamond", shape: "◇" },
+  { name: "crosshair", label: "Target", shape: "⊕" },
+];
+
+const CONTEXT_MENUS: { name: ContextMenuStyle; label: string; desc: string }[] = [
+  { name: "native", label: "Native", desc: "OS default" },
+  { name: "minimal", label: "Minimal", desc: "Clean & flat" },
+  { name: "rounded", label: "Rounded", desc: "Soft & friendly" },
+  { name: "glass", label: "Glass", desc: "Frosted panels" },
+];
+
 export function SettingsView() {
   const settings = useSettingsStore();
   const {
     theme, fontFamily, fontSize,
     soundEnabled, hapticEnabled, reduceMotion,
+    contextMenu, cursor,
     setTheme, setFontFamily, setFontSize,
     setSoundEnabled, setHapticEnabled, setReduceMotion,
+    setContextMenu, setCursor,
   } = settings;
 
   return (
@@ -130,6 +153,61 @@ export function SettingsView() {
           onChange={setReduceMotion}
         />
       </Section>
+
+      <Section icon={<MousePointer2 className="h-4 w-4" />} title="Cursor">
+        <p className="mb-3 text-sm text-text-tertiary">
+          Replace the native pointer with a custom cursor (desktop only).
+        </p>
+        <OptionGrid>
+          {CURSORS.map((c) => (
+            <OptionButton
+              key={c.name}
+              label={c.label}
+              selected={cursor === c.name}
+              onClick={() => setCursor(c.name)}
+              preview={
+                <span
+                  className={cn(
+                    "flex h-8 w-full items-center justify-center transition-colors",
+                    cursor === c.name ? "text-accent" : "text-text-secondary"
+                  )}
+                >
+                  <span className="text-xl leading-none">{c.shape}</span>
+                </span>
+              }
+            />
+          ))}
+        </OptionGrid>
+      </Section>
+
+      <Section icon={<Layers className="h-4 w-4" />} title="Context menu">
+        <p className="mb-3 text-sm text-text-tertiary">
+          Choose how the right-click menu looks. Try it anywhere in the app.
+        </p>
+        <OptionGrid>
+          {CONTEXT_MENUS.map((m) => (
+            <OptionButton
+              key={m.name}
+              label={m.label}
+              selected={contextMenu === m.name}
+              onClick={() => setContextMenu(m.name)}
+              preview={
+                <div
+                  className={cn(
+                    "mx-auto mt-1 flex h-8 w-24 items-center justify-center rounded-[var(--radius-sm)] border text-center text-[10px] transition-colors",
+                    contextMenu === m.name
+                      ? "border-accent bg-accent-soft text-accent"
+                      : "border-border-subtle bg-hover text-text-tertiary",
+                    m.name === "glass" && "backdrop-blur-md"
+                  )}
+                >
+                  ⋮ menu
+                </div>
+              }
+            />
+          ))}
+        </OptionGrid>
+      </Section>
     </div>
   );
 }
@@ -194,5 +272,45 @@ function ToggleRow({
         </span>
       </button>
     </div>
+  );
+}
+
+function OptionGrid({ children }: { children: React.ReactNode }) {
+  return <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{children}</div>;
+}
+
+function OptionButton({
+  label,
+  selected,
+  onClick,
+  preview,
+}: {
+  label: string;
+  selected: boolean;
+  onClick: () => void;
+  preview: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={cn(
+        "flex flex-col items-center gap-1 rounded-[var(--radius-md)] border p-2.5 transition-colors",
+        selected
+          ? "border-accent bg-accent-soft"
+          : "border-border-subtle hover:border-border-strong"
+      )}
+    >
+      {preview}
+      <span
+        className={cn(
+          "text-xs",
+          selected ? "font-medium text-accent" : "text-text-secondary"
+        )}
+      >
+        {label}
+      </span>
+    </button>
   );
 }

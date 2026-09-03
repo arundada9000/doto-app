@@ -49,6 +49,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
       exit={{ opacity: 0, x: checklistCount > 0 ? -60 : 0, height: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       className="group"
+      data-item-id={item.id}
       style={{ zIndex: index }}
     >
       <Swipeable
