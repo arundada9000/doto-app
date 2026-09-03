@@ -11,6 +11,7 @@ import { useHaptics } from "@/lib/hooks/useHaptics";
 import { formatRelative } from "@/lib/utils/dates";
 import { cn } from "@/lib/utils/cn";
 import { Swipeable } from "@/components/items/Swipeable";
+import { ItemMenu } from "@/components/items/ItemMenu";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
   const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
@@ -136,6 +137,8 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
             {formatRelative(item.dueAt)}
           </span>
         )}
+
+        <ItemMenu item={item} />
       </div>
       </Swipeable>
     </motion.li>

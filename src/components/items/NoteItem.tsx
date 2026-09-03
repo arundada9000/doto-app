@@ -8,6 +8,7 @@ import { useItemsStore } from "@/lib/stores/itemsStore";
 import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { Swipeable } from "@/components/items/Swipeable";
+import { ItemMenu } from "@/components/items/ItemMenu";
 import { formatRelative } from "@/lib/utils/dates";
 
 export function NoteItem({ item }: { item: Item }) {
@@ -44,13 +45,14 @@ export function NoteItem({ item }: { item: Item }) {
             {item.title}
           </p>
           <div className="mt-1.5 flex items-center gap-2 text-xs text-text-tertiary">
-            <span>{formatRelative(item.createdAt)}</span>
+            <span className="flex-1">{formatRelative(item.createdAt)}</span>
             {item.attachments.length > 0 && (
               <span className="inline-flex items-center gap-1">
                 <Paperclip className="h-3.5 w-3.5" />
                 {item.attachments.length}
               </span>
             )}
+            <ItemMenu item={item} />
           </div>
         </div>
       </Swipeable>
