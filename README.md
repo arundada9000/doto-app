@@ -214,4 +214,7 @@ DoTo is privacy-friendly by default. Basic usage requires no account, and all us
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE).
+DoTo is source available under the DoTo Non-Commercial Licence. It is free to
+use, study, modify, and share for any non-commercial purpose. Selling it, or
+offering it as a paid or ad-supported service, needs written permission from the
+author. See [LICENSE](LICENSE).

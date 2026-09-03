@@ -13,7 +13,7 @@ export const FAQ: FaqEntry[] = [
   {
     question: "Is DoTo free?",
     answer:
-      "Yes. DoTo is free and open source under the MIT licence. There is no paid tier, no trial, and no account to create.",
+      "Yes. DoTo is free to use, with no paid tier, no trial, and no account to create. The source is available, and you may study, modify, and share it for any non-commercial purpose. Selling it, or running it as a paid service, needs written permission from the author.",
   },
   {
     question: "Does DoTo work offline?",

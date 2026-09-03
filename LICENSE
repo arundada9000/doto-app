@@ -1,21 +1,65 @@
-MIT License
+DoTo Non-Commercial Licence
+Copyright (c) 2026 Arun Neupane. All rights reserved.
 
-Copyright (c) 2026 DoTo
+1. Definitions
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+   "The Software" means DoTo, including its source code, assets, and
+   documentation, as distributed in this repository.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+   "The Author" means Arun Neupane, the copyright holder.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   "Commercial Use" means any use whose primary purpose is, or is directed
+   toward, commercial advantage or monetary compensation. This includes selling
+   the Software, selling access to it, offering it as a paid or ad-supported
+   service, bundling it with a paid product, and redistributing it for a fee.
+
+2. Grant
+
+   The Author grants you a worldwide, royalty-free, non-exclusive licence to
+   use, copy, modify, and share the Software for any purpose that is not a
+   Commercial Use, including personal use, study, teaching, and research.
+
+   You may run your own copy of the Software, private or public, at no cost.
+
+3. Conditions
+
+   a. This licence and the copyright notice above must be included with every
+      copy or substantial portion of the Software that you share.
+
+   b. Modified versions must be clearly marked as changed, and must not be
+      presented as the original Software.
+
+4. Restrictions
+
+   a. Commercial Use requires prior written permission from the Author.
+
+   b. You may not sell, sublicense, or relicense the Software, in whole or in
+      part, whether modified or unmodified, without that permission.
+
+   c. This licence grants no rights to the DoTo name or its logo beyond what is
+      needed to identify the Software.
+
+5. Permission for Commercial Use
+
+   Commercial permission may be granted on request. Contact the Author at
+   arunneupane0000@gmail.com.
+
+6. No Warranty
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN
+   ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. Termination
+
+   Any use outside the terms above ends the rights granted by this licence
+   automatically. Rights may be reinstated by the Author in writing.
+
+---
+
+Note: this is a source-available licence, not an open-source licence as defined
+by the Open Source Initiative, because it restricts commercial use. If you
+intend to rely on it commercially, take your own legal advice.

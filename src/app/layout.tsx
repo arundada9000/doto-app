@@ -6,12 +6,7 @@ import {
   Nunito,
   Lora,
 } from "next/font/google";
-import {
-  siteName,
-  siteDescription,
-  siteUrl,
-  siteUrlConfigured,
-} from "@/lib/site";
+import { siteName, siteDescription, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -59,11 +54,7 @@ export const metadata: Metadata = {
     "PWA task manager",
     "local-first to-do list",
   ],
-  // Until a real origin is supplied the canonical URLs would point at a
-  // placeholder, so nothing is indexed rather than indexing the wrong host.
-  robots: siteUrlConfigured
-    ? { index: true, follow: true }
-    : { index: false, follow: false },
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     siteName,
