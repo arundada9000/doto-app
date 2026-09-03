@@ -11,10 +11,12 @@ import {
   ChevronRight,
   Puzzle,
   User,
+  Bell,
 } from "lucide-react";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { DataSettings } from "@/components/settings/DataSettings";
+import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import type {
   ThemeName,
   FontFamilyName,
@@ -199,6 +201,10 @@ export function SettingsView() {
           checked={reduceMotion}
           onChange={setReduceMotion}
         />
+      </Section>
+
+      <Section icon={<Bell className="h-4 w-4" />} title="Reminders">
+        <NotificationSettings />
       </Section>
 
       <Section icon={<MousePointer2 className="h-4 w-4" />} title="Cursor">

@@ -66,7 +66,10 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
 
   updateItem: async (id, updates) => {
     const now = Date.now();
-    const patched = { ...updates, updatedAt: now };
+    // Re-arm the reminder whenever it is changed, so an edited time fires again.
+    const rearm =
+      "reminder" in updates ? { isReminderSent: false } : undefined;
+    const patched = { ...updates, ...rearm, updatedAt: now };
     await itemsTable.update(id, patched);
     set({
       items: get().items.map((i) =>

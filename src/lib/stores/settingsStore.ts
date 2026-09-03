@@ -9,7 +9,7 @@ import type {
 } from "@/types";
 import { settingsTable } from "@/lib/db";
 
-const DEFAULT_SETTINGS: Settings = {
+export const DEFAULT_SETTINGS: Settings = {
   theme: "system",
   fontFamily: "system",
   fontSize: 16,
@@ -38,6 +38,7 @@ interface SettingsState extends Settings {
   setCursor: (cursor: CursorStyle) => void;
   setCompletion: (completion: CompletionStyle) => void;
   setProfileName: (name: string) => void;
+  resetSettings: () => Promise<void>;
 }
 
 async function persist(state: SettingsState) {
@@ -128,5 +129,10 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   setProfileName: (profileName) => {
     set({ profileName });
     persist(get());
+  },
+
+  resetSettings: async () => {
+    set({ ...DEFAULT_SETTINGS });
+    await persist(get());
   },
 }));
