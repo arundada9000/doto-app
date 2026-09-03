@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useCollapsedHeader } from "@/lib/hooks/useCollapsedHeader";
 import { AnimatePresence, motion } from "framer-motion";
 import { Inbox, Sun, CheckCircle2, Flame, CalendarArrowDown } from "lucide-react";
 import { useItemsStore } from "@/lib/stores/itemsStore";
@@ -24,25 +25,11 @@ function PageHeader({
   subtitle: string;
   greeting?: string;
 }) {
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
-
-  // A sentinel above the header reports the stuck state without listening to
-  // scroll, so nothing runs per frame while the list is moving.
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setStuck(!entry.isIntersecting),
-      { threshold: 1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { anchorRef, collapsed: stuck } = useCollapsedHeader();
 
   return (
     <>
-      <div ref={sentinelRef} aria-hidden className="h-px w-full" />
+      <div ref={anchorRef} aria-hidden className="h-px w-full" />
       <motion.header
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
