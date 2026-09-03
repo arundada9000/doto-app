@@ -10,9 +10,10 @@ import { useSound } from "@/lib/hooks/useSound";
 import { useHaptics } from "@/lib/hooks/useHaptics";
 import { formatRelative } from "@/lib/utils/dates";
 import { cn } from "@/lib/utils/cn";
+import { Swipeable } from "@/components/items/Swipeable";
 
 export function TaskItem({ item, index }: { item: Item; index: number }) {
-  const { completeItem, uncompleteItem } = useItemsStore();
+  const { completeItem, uncompleteItem, deleteItem } = useItemsStore();
   const openItem = useAppStore((s) => s.openItem);
   const { play } = useSound();
   const { vibrate } = useHaptics();
@@ -47,12 +48,20 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
       className="group"
       style={{ zIndex: index }}
     >
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={open}
-        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
-        className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
+      <Swipeable
+        onSwipeRight={toggle}
+        onSwipeLeft={async () => {
+          await deleteItem(item.id);
+          play("confirm");
+          vibrate("light");
+        }}
+      >
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={open}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
+          className="relative flex items-start gap-3 rounded-[var(--radius-md)] px-2 py-2.5 transition-colors hover:bg-hover focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
         {celebrating && <Celebration />}
         <button
           type="button"
@@ -128,6 +137,7 @@ export function TaskItem({ item, index }: { item: Item; index: number }) {
           </span>
         )}
       </div>
+      </Swipeable>
     </motion.li>
   );
 }

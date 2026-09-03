@@ -111,14 +111,12 @@ export const useItemsStore = create<ItemsState>((set, get) => ({
 
     await Promise.all(updates);
 
-    const reordered = ids
-      .map((id, index) => {
-        const item = items.find((i) => i.id === id);
-        return item ? { ...item, order: index } : null;
-      })
-      .filter(Boolean) as Item[];
-
-    set({ items: reordered });
+    set({
+      items: items.map((i) => {
+        const idx = ids.indexOf(i.id);
+        return idx !== -1 ? { ...i, order: idx, updatedAt: now } : i;
+      }),
+    });
   },
 
   toggleChecklistItem: async (itemId, checklistId) => {
