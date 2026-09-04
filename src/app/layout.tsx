@@ -102,7 +102,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${nunito.variable} ${lora.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full font-sans">{children}</body>
+      {/* Direction contract — iOS glass & depth: translucent bar, squircle
+          group cards, a floating device hero, springy motion. Replaces the
+          flat grouped list with an Apple feature-page material world. */}
+      <body
+        className="min-h-full font-sans"
+        style={{ fontFamily: "var(--font-geist-sans)" }}
+      >
+        {children}
+      </body>
     </html>
   );
 }

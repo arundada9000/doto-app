@@ -1,49 +1,15 @@
 import Link from "next/link";
 import { author, siteName } from "@/lib/site";
+import { SiteHeader } from "./SiteHeader";
 
-/**
- * Header and footer for the marketing surfaces. Deliberately server rendered
- * with no interactivity, so these pages ship no JavaScript at all.
- */
-export function SiteHeader() {
-  return (
-    <header
-      data-translucent="bg"
-      className="sticky top-0 z-20 border-b border-border-subtle/60 bg-bg/80 backdrop-blur-xl"
-    >
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-6 px-5 py-3.5 md:px-8">
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 text-[0.95rem] font-semibold tracking-tight text-text-primary"
-        >
-          <BrandMark />
-          {siteName}
-        </Link>
+export { SiteHeader };
 
-        <nav className="ml-auto flex items-center gap-5 text-sm">
-          <Link
-            href="/blog"
-            className="text-text-secondary transition-colors hover:text-text-primary"
-          >
-            Writing
-          </Link>
-          <Link
-            href="/inbox"
-            className="rounded-full bg-accent px-4 py-1.5 font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
-          >
-            Open app
-          </Link>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
+/** Unchanging brand tile used across the marketing surfaces. */
 export function BrandMark({ size = 26 }: { size?: number }) {
   return (
     <span
       aria-hidden
-      className="inline-flex shrink-0 items-center justify-center rounded-[7px] bg-accent"
+      className="inline-flex shrink-0 items-center justify-center rounded-[9px] bg-accent shadow-md"
       style={{ width: size, height: size }}
     >
       <svg
@@ -52,7 +18,7 @@ export function BrandMark({ size = 26 }: { size?: number }) {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={3}
+        strokeWidth={3.2}
         strokeLinecap="round"
         strokeLinejoin="round"
         className="text-text-onAccent"

@@ -11,8 +11,6 @@ import {
   Bell,
   Palette,
   ArrowRight,
-  Hash,
-  Clock,
   ChevronRight,
 } from "lucide-react";
 import { FAQ } from "@/lib/faq";
@@ -25,6 +23,8 @@ import {
   siteTagline,
 } from "@/lib/site";
 import { SiteFooter, SiteHeader } from "@/components/marketing/SiteChrome";
+import { Reveal } from "@/components/marketing/Reveal";
+import { HeroDevice, CaptureDemo } from "@/components/marketing/HeroDevice";
 
 const TITLE = "DoTo: the offline-first capture app for tasks and notes";
 
@@ -49,7 +49,7 @@ const STATS = [
 ];
 
 /**
- * Tinted tiles in the manner of a grouped iOS list, where colour separates one
+ * Tinted tiles styled like an iOS grouped list, where colour separates one
  * row from the next rather than decorating it.
  */
 const FEATURES = [
@@ -118,32 +118,32 @@ export default function LandingPage() {
 
       <main>
         {/* Hero */}
-        <section className="ambient relative overflow-hidden">
-          <div className="mx-auto w-full max-w-5xl px-5 pb-14 pt-20 text-center md:px-8 md:pb-20 md:pt-32">
-            <p className="rise inline-flex items-center gap-2 rounded-full bg-surface px-4 py-1.5 text-[0.8125rem] font-medium text-text-secondary shadow-sm">
+        <section className="ambient relative overflow-hidden pt-20 md:pt-28">
+          <div className="mx-auto w-full max-w-5xl px-5 text-center md:px-8">
+            <p className="ios-rise inline-flex items-center gap-2 rounded-full border border-border-subtle bg-surface/80 px-4 py-1.5 text-[0.8125rem] font-medium text-text-secondary shadow-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-secondary-color" />
               Free, offline-first, no account
             </p>
 
-            <h1 className="rise rise-1 mx-auto mt-8 max-w-4xl text-[clamp(2.75rem,7.5vw,5.5rem)] font-semibold leading-[1.03] tracking-[-0.035em] text-text-primary">
+            <h1 className="ios-rise ios-rise-1 mx-auto mt-8 max-w-4xl text-[clamp(2.9rem,8vw,6rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-text-primary">
               Capture it instantly.
             </h1>
-            <p className="rise rise-2 mx-auto mt-6 max-w-xl text-[1.0625rem] leading-relaxed text-text-secondary md:text-xl">
+            <p className="ios-rise ios-rise-2 mx-auto mt-6 max-w-xl text-[1.0625rem] leading-relaxed text-text-secondary md:text-xl">
               A place to put a thought down in one keystroke and stop carrying
               it. Works with no connection. Nothing leaves your device.
             </p>
 
-            <div className="rise rise-3 mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div className="ios-rise ios-rise-3 mt-10 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/inbox"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-[0.9375rem] font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-[0.9375rem] font-medium text-text-onAccent shadow-md transition-transform press hover:bg-accent-hover"
               >
                 Open DoTo
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
               <Link
                 href="/blog/install-doto-as-an-app"
-                className="inline-flex items-center gap-1 rounded-full px-5 py-3.5 text-[0.9375rem] font-medium text-accent transition-opacity hover:opacity-70"
+                className="inline-flex items-center gap-1 rounded-full px-5 py-3.5 text-[0.9375rem] font-medium text-accent transition-colors hover:bg-accent-soft"
               >
                 How to install it
                 <ChevronRight className="h-4 w-4" aria-hidden />
@@ -151,55 +151,50 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mx-auto w-full max-w-6xl px-5 pb-20 md:px-8 md:pb-28">
-            <div className="rise rise-4 drift overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-lg">
-              <Image
-                src="/screenshots/today-wide.png"
-                alt="The DoTo Today view, showing the day's progress ring, a streak, an overdue task, and the tasks still due"
-                width={1600}
-                height={820}
-                priority
-                className="w-full"
-              />
-            </div>
-          </div>
+          <HeroDevice />
         </section>
 
         {/* Stats */}
         <Section>
-          <dl className="mx-auto grid max-w-4xl grid-cols-2 gap-y-10 text-center md:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="reveal">
+          <dl className="mx-auto grid max-w-4xl grid-cols-2 gap-3 md:grid-cols-4">
+            {STATS.map((stat, i) => (
+              <Reveal
+                key={stat.label}
+                delay={i * 60}
+                className="rounded-[calc(var(--radius-lg)*1.6)] border border-border-subtle bg-surface p-6 text-center shadow-sm transition-transform press"
+              >
                 <dt className="text-4xl font-semibold tracking-[-0.02em] text-text-primary md:text-5xl">
                   {stat.value}
                 </dt>
                 <dd className="mx-auto mt-2 max-w-[10rem] text-sm leading-snug text-text-tertiary">
                   {stat.label}
                 </dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </Section>
 
         {/* Steps */}
         <Section>
-          <SectionHead
-            eyebrow="How it works"
-            title="Four moves, and none of them is filing."
-          />
-          <ol className="mx-auto mt-14 grid max-w-5xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <SectionHead eyebrow="How it works" title="Four moves, and none of them is filing." />
+          <ol className="mx-auto mt-14 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="reveal text-center">
-                <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-[0.8125rem] font-semibold tabular-nums text-accent">
+              <Reveal
+                key={step.title}
+                as="li"
+                delay={i * 70}
+                className="rounded-[calc(var(--radius-lg)*1.6)] border border-border-subtle bg-surface p-6 shadow-sm transition-shadow press"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-[0.8125rem] font-semibold tabular-nums text-accent">
                   {i + 1}
                 </span>
                 <h3 className="mt-4 text-lg font-medium text-text-primary">
                   {step.title}
                 </h3>
-                <p className="mx-auto mt-2 max-w-[16rem] text-[0.9375rem] leading-relaxed text-text-secondary">
+                <p className="mt-2 max-w-[16rem] text-[0.9375rem] leading-relaxed text-text-secondary">
                   {step.body}
                 </p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </Section>
@@ -211,51 +206,16 @@ export default function LandingPage() {
             title="Type the sentence. Keep the structure."
             lede="A due date is fastest when you never open a picker. DoTo reads what it recognises out of the line you already typed, and leaves the rest as the title."
           />
-          <div className="reveal mx-auto mt-14 max-w-2xl overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-md">
-            <div className="p-7 md:p-9">
-              <p className="text-xs uppercase tracking-wider text-text-tertiary">
-                You type
-              </p>
-              <p className="mt-3 font-mono text-lg text-text-primary md:text-xl">
-                Call Ram tomorrow at 10 #work
-              </p>
-            </div>
-            <div className="h-px bg-border-subtle" />
-            <div className="p-7 md:p-9">
-              <p className="text-xs uppercase tracking-wider text-text-tertiary">
-                DoTo saves
-              </p>
-              <div className="mt-4 flex items-start gap-3">
-                <span
-                  aria-hidden
-                  className="mt-0.5 h-6 w-6 shrink-0 rounded-full border-2 border-border-strong"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[0.9375rem] text-text-primary">Call Ram</p>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    <Chip icon={<Clock className="h-3 w-3" />}>
-                      Tomorrow, 10:00
-                    </Chip>
-                    <Chip icon={<Hash className="h-3 w-3" />}>work</Chip>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p className="reveal mx-auto mt-6 max-w-2xl text-center text-sm text-text-tertiary">
-            Never required. Type{" "}
-            <span className="font-medium text-text-secondary">Buy milk</span> and
-            you get a task called Buy milk.
-          </p>
+          <CaptureDemo />
         </Section>
 
-        {/* Features, as a grouped list */}
+        {/* Features, as a grouped glass list */}
         <Section>
           <SectionHead
             eyebrow="What it does"
             title="Small on the surface, complete underneath."
           />
-          <div className="mx-auto mt-14 grid max-w-5xl gap-5 md:grid-cols-2">
+          <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-2">
             <FeatureGroup features={FEATURES.slice(0, 4)} />
             <FeatureGroup features={FEATURES.slice(4)} />
           </div>
@@ -284,7 +244,7 @@ export default function LandingPage() {
 
         {/* Privacy */}
         <Section>
-          <div className="reveal mx-auto max-w-3xl text-center">
+          <Reveal className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-medium uppercase tracking-wider text-accent">
               Privacy
             </p>
@@ -300,23 +260,23 @@ export default function LandingPage() {
             </p>
             <Link
               href="/blog/local-first-privacy"
-              className="mt-7 inline-flex items-center gap-1 text-[0.9375rem] font-medium text-accent transition-opacity hover:opacity-70"
+              className="mt-7 inline-flex items-center gap-1 text-[0.9375rem] font-medium text-accent transition-colors hover:text-accent-hover"
             >
               Why this matters more than it sounds
               <ChevronRight className="h-4 w-4" aria-hidden />
             </Link>
-          </div>
+          </Reveal>
         </Section>
 
         {/* Writing */}
         <Section>
           <SectionHead eyebrow="Writing" title="Notes from building it." />
-          <ul className="mx-auto mt-14 grid max-w-5xl gap-5 md:grid-cols-3">
-            {posts.slice(0, 3).map((post) => (
-              <li key={post.slug} className="reveal">
+          <ul className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3">
+            {posts.slice(0, 3).map((post, i) => (
+              <Reveal key={post.slug} as="li" delay={i * 60}>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="group flex h-full flex-col rounded-[var(--radius-xl)] bg-surface p-6 shadow-sm transition-shadow hover:shadow-md"
+                  className="group flex h-full flex-col rounded-[calc(var(--radius-xl)*1.4)] border border-border-subtle bg-surface p-6 shadow-sm transition-transform press"
                 >
                   <p className="text-xs text-text-tertiary">
                     {post.readingMinutes} minute read
@@ -327,21 +287,21 @@ export default function LandingPage() {
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">
                     {post.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                     Read it
-                    <ChevronRight
-                      className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                       aria-hidden
                     />
                   </span>
                 </Link>
-              </li>
+              </Reveal>
             ))}
           </ul>
           <div className="reveal mt-10 text-center">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-1 text-[0.9375rem] font-medium text-accent transition-opacity hover:opacity-70"
+              className="inline-flex items-center gap-1 text-[0.9375rem] font-medium text-accent transition-colors hover:text-accent-hover"
             >
               All writing
               <ChevronRight className="h-4 w-4" aria-hidden />
@@ -351,7 +311,7 @@ export default function LandingPage() {
 
         {/* Maker */}
         <Section>
-          <div className="reveal mx-auto max-w-3xl rounded-[var(--radius-xl)] bg-surface p-8 text-center shadow-md md:p-12">
+          <Reveal className="mx-auto max-w-3xl rounded-[calc(var(--radius-xl)*1.6)] border border-border-subtle bg-surface p-8 text-center shadow-md md:p-12">
             <p className="text-sm font-medium uppercase tracking-wider text-accent">
               Built by
             </p>
@@ -389,15 +349,15 @@ export default function LandingPage() {
                 </a>
               ))}
             </div>
-          </div>
+          </Reveal>
         </Section>
 
         {/* FAQ */}
         <Section>
           <SectionHead eyebrow="Questions" title="The things people ask." />
-          <dl className="mx-auto mt-14 max-w-3xl overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-sm">
+          <dl className="mx-auto mt-14 max-w-3xl overflow-hidden rounded-[calc(var(--radius-xl)*1.6)] border border-border-subtle bg-surface shadow-sm">
             {FAQ.map((entry, i) => (
-              <div key={entry.question} className="reveal">
+              <Reveal key={entry.question}>
                 {i > 0 && <div className="ml-6 h-px bg-border-subtle" />}
                 <div className="px-6 py-6 md:px-8">
                   <dt className="font-medium text-text-primary">
@@ -407,28 +367,32 @@ export default function LandingPage() {
                     {entry.answer}
                   </dd>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </Section>
 
         {/* Close */}
         <section className="px-5 py-28 text-center md:px-8 md:py-40">
-          <h2 className="reveal mx-auto max-w-3xl text-[clamp(2rem,5.5vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-text-primary">
-            {siteTagline}
-          </h2>
-          <div className="reveal mt-10">
-            <Link
-              href="/inbox"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-[0.9375rem] font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
-            >
-              Open DoTo
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-          </div>
-          <p className="reveal mt-5 text-sm text-text-tertiary">
-            No account. Works offline. Free to use.
-          </p>
+          <Reveal>
+            <h2 className="mx-auto max-w-3xl text-[clamp(2rem,5.5vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-text-primary">
+              {siteTagline}
+            </h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <div className="mt-10">
+              <Link
+                href="/inbox"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 text-[0.9375rem] font-medium text-text-onAccent shadow-lg transition-transform press hover:bg-accent-hover"
+              >
+                Open DoTo
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+            <p className="mt-5 text-sm text-text-tertiary">
+              No account. Works offline. Free to use.
+            </p>
+          </Reveal>
         </section>
       </main>
 
@@ -456,7 +420,7 @@ function SectionHead({
   lede?: string;
 }) {
   return (
-    <div className="reveal mx-auto max-w-2xl text-center">
+    <Reveal className="mx-auto max-w-2xl text-center">
       <p className="text-sm font-medium uppercase tracking-wider text-accent">
         {eyebrow}
       </p>
@@ -468,7 +432,7 @@ function SectionHead({
           {lede}
         </p>
       )}
-    </div>
+    </Reveal>
   );
 }
 
@@ -479,14 +443,14 @@ function FeatureGroup({
   features: (typeof FEATURES)[number][];
 }) {
   return (
-    <div className="overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-sm">
+    <div className="overflow-hidden rounded-[calc(var(--radius-xl)*1.4)] border border-border-subtle bg-surface shadow-sm">
       {features.map(({ icon: Icon, tone, title, body }, i) => (
-        <div key={title} className="reveal">
+        <Reveal key={title}>
           {i > 0 && <div className="ml-[4.25rem] h-px bg-border-subtle" />}
-          <article className="flex gap-4 px-5 py-5">
+          <article className="flex gap-4 px-5 py-5 transition-colors hover:bg-surface-secondary">
             <span
               aria-hidden
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] ${tone}`}
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] ${tone} shadow-sm`}
             >
               <Icon className="h-[1.15rem] w-[1.15rem] text-text-onAccent" />
             </span>
@@ -499,24 +463,9 @@ function FeatureGroup({
               </p>
             </div>
           </article>
-        </div>
+        </Reveal>
       ))}
     </div>
-  );
-}
-
-function Chip({
-  icon,
-  children,
-}: {
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">
-      {icon}
-      {children}
-    </span>
   );
 }
 
@@ -530,14 +479,16 @@ function Screen({
   caption: string;
 }) {
   return (
-    <figure className="reveal">
-      <div className="overflow-hidden rounded-[var(--radius-xl)] bg-bg shadow-md">
-        <Image src={src} alt={alt} width={1080} height={1920} className="w-full" />
-      </div>
-      <figcaption className="mt-4 text-center text-sm text-text-tertiary">
-        {caption}
-      </figcaption>
-    </figure>
+    <Reveal>
+      <figure>
+        <div className="overflow-hidden rounded-[calc(var(--radius-xl)*1.6)] border border-border-subtle bg-bg shadow-lg">
+          <Image src={src} alt={alt} width={1080} height={1920} className="w-full" />
+        </div>
+        <figcaption className="mt-4 text-center text-sm text-text-tertiary">
+          {caption}
+        </figcaption>
+      </figure>
+    </Reveal>
   );
 }
 

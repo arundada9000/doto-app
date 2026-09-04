@@ -9,6 +9,17 @@ reaches a first release.
 
 ### Added
 
+- Redesigned the marketing surfaces around an iOS glass-and-depth language:
+  a translucent frosted header that raises under scroll, an interactive
+  Android-style spring menu, and a hero with a cursor-tilted floating device
+  frame
+- An animated capture demo that types the plain-language sentence and reveals
+  the parsed chips, looping calmly and honouring reduced motion
+- Scroll-reveal entrances for marketing sections that fall back to visible
+  content without JavaScript and respect `prefers-reduced-motion`
+- A filterable blog index with tag chips and live search
+- A hairline reading-progress bar at the top of each article
+- Pinch-zoom re-enabled at the viewport (previously locked to `maximumScale: 1`)
 - A statically rendered landing page and six articles under `/blog`, with
   `SoftwareApplication`, `FAQPage`, `BlogPosting`, `BreadcrumbList`, `Person`,
   and `WebSite` structured data generated from the page content

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { getPost, posts, type Post } from "@/content/posts";
 import { absoluteUrl, author, siteName } from "@/lib/site";
 import { SiteFooter, SiteHeader } from "@/components/marketing/SiteChrome";
+import { ScrollProgress } from "@/components/marketing/ScrollProgress";
+import { Reveal } from "@/components/marketing/Reveal";
 import { formatDate } from "@/app/blog/page";
 
 export function generateStaticParams() {
@@ -59,20 +61,21 @@ export default async function ArticlePage({
   return (
     <>
       <SiteHeader />
+      <ScrollProgress />
       <main className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8 md:py-20">
         <ArticleSchema post={post} />
 
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface px-3.5 py-1.5 text-sm text-text-secondary shadow-sm transition-all press hover:text-text-primary"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />
           All writing
         </Link>
 
-        <article className="mt-8">
+        <article className="mt-10">
           <header className="prose-measure">
-            <div className="rise flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
+            <div className="ios-rise flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
               <time dateTime={post.published}>{formatDate(post.published)}</time>
               <span aria-hidden>&middot;</span>
               <span>{post.readingMinutes} minute read</span>
@@ -85,7 +88,7 @@ export default async function ArticlePage({
                 </span>
               ))}
             </div>
-            <h1 className="rise rise-1 mt-4 text-3xl font-semibold leading-[1.12] tracking-tight text-text-primary md:text-5xl">
+            <h1 className="ios-rise ios-rise-1 mt-5 text-3xl font-semibold leading-[1.1] tracking-tight text-text-primary md:text-5xl">
               {post.title}
             </h1>
           </header>
@@ -94,7 +97,7 @@ export default async function ArticlePage({
             {post.intro.map((paragraph, i) => (
               <p
                 key={i}
-                className="rise rise-2 text-[1.0625rem] leading-[1.75] text-text-secondary"
+                className="ios-rise ios-rise-2 text-[1.125rem] leading-[1.8] text-text-primary"
               >
                 {paragraph}
               </p>
@@ -102,79 +105,93 @@ export default async function ArticlePage({
           </div>
 
           {post.sections.map((section) => (
-            <section key={section.heading} className="prose-measure reveal mt-12">
-              <h2 className="text-xl font-semibold tracking-tight text-text-primary md:text-2xl">
-                {section.heading}
-              </h2>
-              <div className="mt-4 flex flex-col gap-5">
-                {section.body.map((paragraph, i) => (
-                  <p
-                    key={i}
-                    className="text-[1.0625rem] leading-[1.75] text-text-secondary"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-              {section.list && (
-                <ul className="mt-5 flex flex-col gap-2.5">
-                  {section.list.map((entry) => (
-                    <li
-                      key={entry}
-                      className="flex gap-3 text-[1.0625rem] leading-[1.7] text-text-secondary"
+            <section
+              key={section.heading}
+              className="prose-measure mt-14"
+            >
+              <Reveal>
+                <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                  {section.heading}
+                </h2>
+                <div className="mt-5 flex flex-col gap-5">
+                  {section.body.map((paragraph, i) => (
+                    <p
+                      key={i}
+                      className="text-[1.0625rem] leading-[1.8] text-text-secondary"
                     >
-                      <span
-                        aria-hidden
-                        className="mt-[0.65em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
-                      />
-                      {entry}
-                    </li>
+                      {paragraph}
+                    </p>
                   ))}
-                </ul>
-              )}
+                </div>
+                {section.list && (
+                  <ul className="mt-6 flex flex-col gap-3">
+                    {section.list.map((entry) => (
+                      <li
+                        key={entry}
+                        className="flex items-start gap-3 text-[1.0625rem] leading-[1.7] text-text-secondary"
+                      >
+                        <span
+                          aria-hidden
+                          className="mt-[0.45em] flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft"
+                        >
+                          <Check className="h-3 w-3 text-accent" />
+                        </span>
+                        {entry}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Reveal>
             </section>
           ))}
 
           {post.faq && post.faq.length > 0 && (
-            <section className="prose-measure reveal mt-14">
-              <h2 className="text-xl font-semibold tracking-tight text-text-primary md:text-2xl">
-                Questions
-              </h2>
-              <dl className="mt-6 overflow-hidden rounded-[var(--radius-xl)] bg-surface shadow-sm">
-                {post.faq.map((entry, i) => (
-                  <div key={entry.question}>
-                    {i > 0 && <div className="ml-6 h-px bg-border-subtle" />}
-                    <div className="px-6 py-5">
-                      <dt className="font-medium text-text-primary">
-                        {entry.question}
-                      </dt>
-                      <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-text-secondary">
-                        {entry.answer}
-                      </dd>
+            <section className="prose-measure mt-16">
+              <Reveal>
+                <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                  Questions
+                </h2>
+                <dl className="mt-6 overflow-hidden rounded-[calc(var(--radius-xl)*1.5)] border border-border-subtle bg-surface shadow-sm">
+                  {post.faq.map((entry, i) => (
+                    <div key={entry.question}>
+                      {i > 0 && <div className="ml-6 h-px bg-border-subtle" />}
+                      <div className="px-6 py-5">
+                        <dt className="font-medium text-text-primary">
+                          {entry.question}
+                        </dt>
+                        <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-text-secondary">
+                          {entry.answer}
+                        </dd>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </dl>
+                  ))}
+                </dl>
+              </Reveal>
             </section>
           )}
         </article>
 
-        <aside className="reveal mt-16 rounded-[var(--radius-xl)] bg-surface p-7 shadow-md md:p-9">
-          <h2 className="text-lg font-semibold tracking-tight text-text-primary">
-            Try it while the idea is fresh
-          </h2>
-          <p className="mt-2 max-w-2xl text-[0.9375rem] leading-relaxed text-text-secondary">
-            DoTo opens straight into a capture box. No account, no sign-up, and
-            it works with the network switched off.
-          </p>
-          <Link
-            href="/inbox"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-[0.9375rem] font-medium text-text-onAccent transition-colors hover:bg-accent-hover"
-          >
-            Open DoTo
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </aside>
+        <Reveal
+          className="mt-16 overflow-hidden rounded-[calc(var(--radius-xl)*1.6)] border border-border-subtle bg-surface shadow-md"
+          as="aside"
+        >
+          <div className="ambient relative p-7 md:p-9">
+            <h2 className="text-lg font-semibold tracking-tight text-text-primary">
+              Try it while the idea is fresh
+            </h2>
+            <p className="mt-2 max-w-2xl text-[0.9375rem] leading-relaxed text-text-secondary">
+              DoTo opens straight into a capture box. No account, no sign-up,
+              and it works with the network switched off.
+            </p>
+            <Link
+              href="/inbox"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-[0.9375rem] font-medium text-text-onAccent shadow-md transition-transform press hover:bg-accent-hover"
+            >
+              Open DoTo
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+        </Reveal>
 
         {next.slug !== post.slug && (
           <nav className="mt-10 border-t border-border-subtle pt-6">
@@ -183,7 +200,7 @@ export default async function ArticlePage({
             </p>
             <Link
               href={`/blog/${next.slug}`}
-              className="group mt-2 inline-flex items-baseline gap-2 text-lg font-medium text-text-primary"
+              className="group mt-2 inline-flex items-baseline gap-2 text-lg font-medium text-text-primary transition-colors hover:text-accent"
             >
               {next.title}
               <ArrowRight
@@ -275,7 +292,10 @@ function ArticleSchema({ post }: { post: Post }) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": graph,
+        }),
       }}
     />
   );
