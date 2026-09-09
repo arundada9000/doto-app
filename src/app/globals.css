@@ -955,3 +955,25 @@ button:not(:disabled):active {
     animation-delay: 270ms;
   }
 }
+
+/* ------------------------------------------------------------
+   No-script safety net
+
+   Scroll-revealed content is rendered in its hidden state, because the
+   reveal has to start from somewhere. That is only safe while JavaScript is
+   guaranteed to arrive and switch it on. Until the inline script in the root
+   layout marks the document, the hidden state is neutralised, so a failed or
+   slow bundle leaves a readable page rather than a blank one.
+
+   Tailwind v4 offsets with the translate property rather than transform. A
+   `translate: none` sitting beside `transform: none` is dropped by the
+   minifier, so the variables those utilities actually drive are reset instead,
+   which survives the build.
+   ------------------------------------------------------------ */
+html:not([data-js]) [data-reveal] {
+  opacity: 1 !important;
+  --tw-translate-x: 0 !important;
+  --tw-translate-y: 0 !important;
+  --tw-translate-z: 0 !important;
+  transform: none !important;
+}

@@ -9,8 +9,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
  * so it stays clear of the set-state-in-effect rule), and the animation is
  * gated through Tailwind's `motion-safe:` variant: under reduced motion the
  * hidden translate/opacity are simply not applied, so the content is always
- * visible. Content is rendered visible-by-default in SSR; the reveal animates
- * it on scroll once JS is on the page.
+ * visible.
+ *
+ * The hidden state does ship in the server-rendered markup, since the reveal
+ * has to start from somewhere. `data-reveal` is the hook that makes that safe:
+ * globals.css switches the hidden state off until the inline script in the
+ * root layout marks the document as scripted, so a failed or slow bundle
+ * leaves the page readable instead of blank.
  */
 export function Reveal({
   children,
@@ -46,6 +51,7 @@ export function Reveal({
   return (
     <Tag
       ref={ref as never}
+      data-reveal=""
       className={`${className} motion-safe:transition-all motion-safe:duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] ${
         isShown
           ? "motion-safe:translate-y-0 motion-safe:opacity-100"

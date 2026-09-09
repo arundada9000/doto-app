@@ -56,6 +56,18 @@ reaches a first release.
 
 ### Fixed
 
+- Scroll-revealed sections shipped in their hidden state, so the page below the
+  hero stayed invisible until JavaScript hydrated, and never appeared at all if
+  it failed. The hidden state is now switched on by the document being marked
+  as scripted
+- The capture demo rendered empty on the server, leaving the sentence that
+  demonstrates the headline feature out of the HTML entirely
+- The reading-progress bar and the hero device re-rendered React on every
+  scroll event; both now write their transform straight to the node inside a
+  requestAnimationFrame
+- The progress bar never read the scroll position on mount, so a restored
+  mid-page position showed an empty bar
+
 - Every app icon had opaque black corners, and the maskable icon was a byte
   copy of the standard one, so it had no safe zone for launcher masking
 - Manifest shortcuts omitted the trailing slash the export serves, so all four

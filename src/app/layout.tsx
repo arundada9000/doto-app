@@ -109,6 +109,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className="min-h-full font-sans"
         style={{ fontFamily: "var(--font-geist-sans)" }}
       >
+        {/*
+          Marks the document as scripted before anything below it is parsed.
+          Scroll-revealed sections ship in their hidden state, so without this
+          flag a slow or failed bundle would leave the page blank below the
+          fold. globals.css keeps that hidden state switched off until the
+          attribute exists.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.setAttribute("data-js","on")`,
+          }}
+        />
         {children}
       </body>
     </html>

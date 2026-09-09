@@ -8,37 +8,59 @@ import { useReducedMotion } from "@/lib/hooks/useMediaQuery";
 const SCRIPT = "Call Ram tomorrow at 10 #work";
 
 /**
- * The hero centrepiece: the Today screenshot inside a device frame that
- * tilts toward the cursor and floats on scroll. Pure transform work, so it
- * stays on the compositor; it quiets to zero travel under reduced motion.
+ * The hero centrepiece: the Today screenshot inside a device frame that tilts
+ * toward the cursor and floats on scroll.
+ *
+ * Both transforms are written straight to their nodes inside a shared
+ * requestAnimationFrame rather than held in React state. The transform itself
+ * was always compositor work, but routing it through state cost a full
+ * reconciliation on every pointer and scroll event to get there.
  */
 export function HeroDevice() {
   const frame = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [float, setFloat] = useState(0);
+  const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let raf = 0;
+    let tiltX = 0;
+    let tiltY = 0;
+    let float = 0;
+
+    const write = () => {
+      raf = 0;
+      if (frame.current) {
+        frame.current.style.transform = `translateY(${float}px)`;
+      }
+      if (panel.current) {
+        panel.current.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      }
+    };
+
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(write);
+    };
+
     const onPointer = (e: PointerEvent) => {
       const el = frame.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() =>
-        setTilt({ x: py * -6, y: px * 8 })
-      );
+      tiltX = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
+      tiltY = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+      schedule();
     };
-    const onScroll = () => setFloat(window.scrollY * 0.06);
+
+    const onScroll = () => {
+      float = window.scrollY * 0.06;
+      schedule();
+    };
 
     const el = frame.current;
     el?.addEventListener("pointermove", onPointer, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       el?.removeEventListener("pointermove", onPointer);
       window.removeEventListener("scroll", onScroll);
     };
@@ -50,14 +72,15 @@ export function HeroDevice() {
       className="relative mx-auto mt-16 w-full max-w-3xl"
       style={{
         perspective: 1400,
-        transform: `translateY(${float}px)`,
+        transform: "translateY(0px)",
         transition: "transform 0.9s cubic-bezier(0.16,1,0.3,1)",
       }}
     >
       <div
+        ref={panel}
         className="relative overflow-hidden rounded-[calc(var(--radius-xl)*2.1)] border border-border-strong/60 bg-surface shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)]"
         style={{
-          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transform: "rotateX(0deg) rotateY(0deg)",
           transformStyle: "preserve-3d",
           transition: "transform 0.25s ease-out",
         }}
@@ -100,10 +123,16 @@ export function HeroDevice() {
  * Animated capture demo: types the plain-language sentence character by
  * character, then reveals the chips DoTo understood. Loops forever with a
  * calm pause, driven by timeouts under reduced-motion awareness.
+ *
+ * The finished state is the initial state, so the sentence and both chips are
+ * in the server-rendered markup. Starting empty meant the clearest statement
+ * of the headline feature existed only after hydration, which put it out of
+ * reach of anything that reads the page without running scripts. The animation
+ * rewinds to the beginning once it takes over.
  */
 export function CaptureDemo() {
-  const [typed, setTyped] = useState("");
-  const [reveal, setReveal] = useState(false);
+  const [typed, setTyped] = useState(SCRIPT);
+  const [reveal, setReveal] = useState(true);
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -129,7 +158,10 @@ export function CaptureDemo() {
       i = 0;
       window.setTimeout(step, 420);
     }
-    const t = window.setTimeout(step, 500);
+    // Rewinds inside the timeout rather than in the effect body, so the first
+    // paint keeps the server's finished state and no state is set during the
+    // effect itself.
+    const t = window.setTimeout(restart, 900);
     return () => {
       cancelled = true;
       window.clearTimeout(t);
