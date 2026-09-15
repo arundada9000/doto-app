@@ -18,7 +18,11 @@ reaches a first release.
 - Scroll-reveal entrances for marketing sections that fall back to visible
   content without JavaScript and respect `prefers-reduced-motion`
 - A filterable blog index with tag chips and live search
-- A hairline reading-progress bar at the top of each article
+- A floating "back to top" button whose ring fills with scroll progress,
+  replacing the previous reading-progress bar
+- A developer watermark in the marketing footer, with social icons, and an
+  About section in the app's Settings view that carries the same links
+- Google site verification, emitted as metadata and inherited by every page
 - Pinch-zoom re-enabled at the viewport (previously locked to `maximumScale: 1`)
 - A statically rendered landing page and six articles under `/blog`, with
   `SoftwareApplication`, `FAQPage`, `BlogPosting`, `BreadcrumbList`, `Person`,
@@ -87,3 +91,8 @@ reaches a first release.
 - The recurrence editor discarded weekdays that capture had understood
 - Capture parsed tags but discarded them, saving every item untagged
 - Buttons showed the default cursor, since Tailwind v4 no longer sets one
+- The production origin pointed at `doto-app.vercel.app`, a different
+  Vercel project serving a throwaway Vite template, so the canonical tags,
+  sitemap, and robots files referenced the wrong host and Google rejected the
+  sitemap as "not allowed at this location". The origin is now the actual
+  deployment, `sajilotodo.vercel.app`

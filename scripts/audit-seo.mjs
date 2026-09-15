@@ -66,6 +66,6 @@ for (const file of pages.sort()) {
 }
 
 console.log("\nSite files");
-for (const f of ["robots.txt", "sitemap.xml", "manifest.webmanifest", "opengraph-image", "rss.xml", "feed.xml"]) {
+for (const f of ["robots.txt", "sitemap.xml", "manifest.webmanifest", "opengraph-image", "llms.txt", "rss.xml", "feed.xml"]) {
   console.log(`  ${f.padEnd(22)} ${existsSync(join("out", f)) ? "present" : "absent"}`);
 }

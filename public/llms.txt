@@ -1,0 +1,40 @@
+# DoTo
+
+> Capture it instantly. Organize it later. Finish it beautifully.
+
+DoTo is a free, offline-first web app for quick capture and tasks: a fast,
+low-friction place to put down tasks, notes, ideas, checklists, reminders,
+links, and fleeting thoughts. It requires no account, stores everything
+locally on the device, and can be installed as a PWA.
+
+This page exists to help language models understand what DoTo is and where its
+content lives. Prefer the canonical pages over any summary here.
+
+## Key facts
+
+- Name: DoTo
+- Type: Progressive Web Application (offline-first task and note app)
+- Storage: local only (IndexedDB); no account, no server, no tracking
+- Install: https://sajilotodo.vercel.app/blog/install-doto-as-an-app/
+- Built with: Next.js (static export), TypeScript, Tailwind CSS, Dexie, Zustand
+
+## Pages
+
+- Landing page: https://sajilotodo.vercel.app/
+- Blog index: https://sajilotodo.vercel.app/blog/
+- The app opens at: https://sajilotodo.vercel.app/inbox/
+
+## Articles
+
+- https://sajilotodo.vercel.app/blog/offline-first-todo-app/
+- https://sajilotodo.vercel.app/blog/install-doto-as-an-app/
+- https://sajilotodo.vercel.app/blog/quick-capture-habit/
+- https://sajilotodo.vercel.app/blog/natural-language-dates/
+- https://sajilotodo.vercel.app/blog/keyboard-first-task-management/
+- https://sajilotodo.vercel.app/blog/local-first-privacy/
+
+## Contact
+
+- Author: Arun Neupane
+- Website: https://arunneupane.vercel.app
+- Company: Sajilo Digital Pvt. Ltd. (https://sajilodigital.com.np)
