@@ -1,8 +1,25 @@
 import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
 import { author, siteName } from "@/lib/site";
 import { SiteHeader } from "./SiteHeader";
+import { ScrollToTop } from "./ScrollToTop";
+import {
+  LinkedInIcon,
+  XIcon,
+  YouTubeIcon,
+  InstagramIcon,
+  FacebookIcon,
+} from "./BrandIcons";
 
 export { SiteHeader };
+
+const SOCIAL_ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  LinkedIn: LinkedInIcon,
+  X: XIcon,
+  YouTube: YouTubeIcon,
+  Instagram: InstagramIcon,
+  Facebook: FacebookIcon,
+};
 
 /** Unchanging brand tile used across the marketing surfaces. */
 export function BrandMark({ size = 26 }: { size?: number }) {
@@ -32,6 +49,7 @@ export function BrandMark({ size = 26 }: { size?: number }) {
 export function SiteFooter() {
   return (
     <footer className="mt-24 border-t border-border-subtle">
+      <ScrollToTop />
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 md:grid-cols-[1.4fr_1fr_1fr] md:px-8">
         <div>
           <Link
@@ -110,6 +128,23 @@ export function SiteFooter() {
               Visit Sajilo Digital
             </a>
           </p>
+          <ul className="flex items-center gap-2.5" aria-label="Social links">
+            {author.socials.map((social) => {
+              const Icon = SOCIAL_ICONS[social.label] ?? LinkedInIcon;
+              return (
+                <li key={social.label}>
+                  <a
+                    href={social.url}
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-surface text-text-secondary shadow-sm transition-all press hover:border-accent/40 hover:text-accent"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
 

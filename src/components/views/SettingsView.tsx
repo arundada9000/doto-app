@@ -12,11 +12,22 @@ import {
   Puzzle,
   User,
   Bell,
+  Heart,
 } from "lucide-react";
 import { useSettingsStore } from "@/lib/stores/settingsStore";
 import { useAppStore } from "@/lib/stores/appStore";
 import { DataSettings } from "@/components/settings/DataSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import {
+  LinkedInIcon,
+  XIcon,
+  YouTubeIcon,
+  InstagramIcon,
+  FacebookIcon,
+  PortfolioIcon,
+} from "@/components/marketing/BrandIcons";
+import { author, siteName } from "@/lib/site";
+import type { ComponentType, SVGProps } from "react";
 import type {
   ThemeName,
   FontFamilyName,
@@ -25,6 +36,14 @@ import type {
   CompletionStyle,
 } from "@/types";
 import { cn } from "@/lib/utils/cn";
+
+const SOCIAL_ICONS: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+  LinkedIn: LinkedInIcon,
+  X: XIcon,
+  YouTube: YouTubeIcon,
+  Instagram: InstagramIcon,
+  Facebook: FacebookIcon,
+};
 
 const THEMES: { name: ThemeName; label: string; swatch: string }[] = [
   { name: "system", label: "System", swatch: "linear-gradient(135deg,#f4f5f7 50%,#101114 50%)" },
@@ -305,6 +324,45 @@ export function SettingsView() {
           </span>
           <ChevronRight className="h-4 w-4 text-text-tertiary" />
         </button>
+      </Section>
+
+      <Section icon={<Heart className="h-4 w-4" />} title="About">
+        <p className="text-sm leading-relaxed text-text-secondary">
+          {siteName} is a free, offline-first capture app built by{" "}
+          <span className="font-medium text-text-primary">{author.name}</span>{" "}
+          — a frontend developer, CTO and Lead Architect at {author.company}.
+          Your tasks and notes stay on your device.
+        </p>
+        <ul className="mt-4 flex flex-wrap items-center gap-2">
+          <li>
+            <a
+              href={author.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border-subtle bg-surface px-3.5 text-sm text-text-secondary transition-colors hover:border-accent/40 hover:text-accent"
+            >
+              <PortfolioIcon className="h-4 w-4" />
+              Portfolio
+            </a>
+          </li>
+          {author.socials.map((social) => {
+            const Icon = SOCIAL_ICONS[social.label] ?? LinkedInIcon;
+            return (
+              <li key={social.label}>
+                <a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  title={social.label}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-subtle bg-surface text-text-secondary transition-colors hover:border-accent/40 hover:text-accent"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
       </Section>
 
       <DataSettings />
