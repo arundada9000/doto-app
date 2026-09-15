@@ -68,7 +68,7 @@ export function SiteFooter() {
 
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-text-tertiary">
-            Built by {author.name}
+            Find {author.name}
           </h2>
           <ul className="mt-3 flex flex-col gap-2 text-sm">
             <li>
@@ -87,18 +87,46 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 border-t border-border-subtle px-5 py-5 text-xs text-text-tertiary md:px-8">
-        <span>
-          &copy; {new Date().getFullYear()} {author.name}. Free to use.
-          Selling it needs written permission.
-        </span>
-        <a
-          href={author.companyUrl}
-          rel="noopener noreferrer"
-          className="ml-auto transition-colors hover:text-text-secondary"
-        >
-          {author.company}
-        </a>
+      <div className="border-t border-border-subtle">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-3 px-5 py-10 text-center md:px-8">
+          <a
+            href={author.website}
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5"
+            aria-label={`DoTo is designed and developed by ${author.name}`}
+          >
+            <BrandMark size={22} />
+            <span className="text-sm font-semibold tracking-tight text-text-primary">
+              Designed &amp; developed by {author.name}
+            </span>
+          </a>
+          <p className="max-w-md text-sm leading-relaxed text-text-tertiary">
+            Frontend developer, CTO and Lead Architect at {author.company}.{" "}
+            <a
+              href={author.companyUrl}
+              rel="noopener noreferrer"
+              className="text-text-secondary underline-offset-4 transition-colors hover:text-accent hover:underline"
+            >
+              Visit Sajilo Digital
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div className="border-t border-border-subtle">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-5 text-xs text-text-tertiary md:px-8">
+          <span>
+            &copy; {new Date().getFullYear()} {author.name}. Free to use.
+            Selling it needs written permission.
+          </span>
+          <a
+            href={author.companyUrl}
+            rel="noopener noreferrer"
+            className="ml-auto transition-colors hover:text-text-secondary"
+          >
+            {author.company}
+          </a>
+        </div>
       </div>
     </footer>
   );
