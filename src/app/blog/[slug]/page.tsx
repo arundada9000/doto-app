@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { getPost, posts, type Post } from "@/content/posts";
 import { absoluteUrl, author, siteName } from "@/lib/site";
 import { SiteFooter, SiteHeader } from "@/components/marketing/SiteChrome";
-import { ScrollProgress } from "@/components/marketing/ScrollProgress";
 import { Reveal } from "@/components/marketing/Reveal";
 import { formatDate } from "@/app/blog/page";
 
@@ -61,7 +60,6 @@ export default async function ArticlePage({
   return (
     <>
       <SiteHeader />
-      <ScrollProgress />
       <main className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8 md:py-20">
         <ArticleSchema post={post} />
 
