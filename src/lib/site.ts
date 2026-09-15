@@ -3,7 +3,7 @@
  * tags, the sitemap, and social card images. Override with NEXT_PUBLIC_SITE_URL
  * when building a preview deployment or moving to another domain.
  */
-const PRODUCTION_ORIGIN = "https://doto-app.vercel.app";
+const PRODUCTION_ORIGIN = "https://sajilotodo.vercel.app";
 
 export const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL || PRODUCTION_ORIGIN
